@@ -70,6 +70,7 @@ ________________________________________
 If you use this code in any scientific publication, you must cite:
 Chávez Cerda J., Acedo Reina E., Luppens C., Vande Perre L., Raffoul R., Verstraeten M., Germany Morrison E., Smets H., Doguet P., Garnier J., Delbeke J., El Tahry R., and Nonclercq A.
 Characterization of Vagus Nerve Active Fibers during Seizure in Rats, Journal of Neural Engineering, 2026. DOI 10.1088/1741-2552/ae30aa
+link: https://iopscience.iop.org/article/10.1088/1741-2552/ae30aa/meta
 ________________________________________
 📜 License
 This project is distributed under the GNU General Public License v2.0 (GPL-2.0).
