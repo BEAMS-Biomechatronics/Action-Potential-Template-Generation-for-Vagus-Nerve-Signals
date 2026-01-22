@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of MovieVm</title>
+  <meta name="keywords" content="MovieVm">
+  <meta name="description" content="Utilisation :">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +utilities -->
+<h1>MovieVm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Utilisation :</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function MovieVm(fibre) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Utilisation :
+ Il faut charger un fichier shift contenant les variables Vm et time
+ensuite simplement copier le nom de la fonctin et changer fiberNbr par le
+numero de la fibre dont on veut observer le potentiel.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function MovieVm(fibre)</a>
+0002 <span class="comment">% Utilisation :</span>
+0003 <span class="comment">% Il faut charger un fichier shift contenant les variables Vm et time</span>
+0004 <span class="comment">%ensuite simplement copier le nom de la fonctin et changer fiberNbr par le</span>
+0005 <span class="comment">%numero de la fibre dont on veut observer le potentiel.</span>
+0006 
+0007     <span class="comment">% Make a movie of the potential</span>
+0008     <span class="comment">%movie(Ftot)</span>
+0009     Ftot=[];
+0010     Vm    = fibre.solution(:,1:end/5);
+0011     time  = fibre.time;
+0012     
+0013     VmMin=min(min(Vm));
+0014     VmMax=max(max(Vm));
+0015     nNodes=size(Vm,2);
+0016     Time= round(time*1e3,2); 
+0017     filename=sprintf(<span class="string">'movieVmFiberNbr_%d.avi'</span>,1);
+0018     v = VideoWriter(filename);
+0019     open(v);
+0020     
+0021     <span class="keyword">for</span> i=1:size(Vm,1)
+0022         fig=plot(1:nNodes,Vm(i,:));
+0023         hold off
+0024         InstantTime=Time(i);
+0025         title({sprintf(<span class="string">'AP propagation fibre n°%d'</span>,1) ; sprintf(<span class="string">' instant %0.5f ms'</span>,InstantTime)});
+0026         xlabel(<span class="string">'Position (n°of Nodes)'</span>) <span class="comment">% x-axis label</span>
+0027         ylabel(<span class="string">'Membrane Potential (V)'</span>) <span class="comment">% y-axis label</span>
+0028         axis([0 nNodes VmMin VmMax])
+0029         ax = gca;
+0030         ax.Units = <span class="string">'pixels'</span>;
+0031         pos = ax.Position;
+0032         marg = 30;
+0033         rect = [-marg, -marg, pos(3)+2*marg, pos(4)+2*marg];
+0034         F = getframe(gcf);<span class="comment">%rect</span>
+0035         writeVideo(v,F)
+0036         <span class="comment">%Ftot=[Ftot F];</span>
+0037     <span class="keyword">end</span>
+0038     
+0039     close(v);
+0040     
+0041     <span class="comment">%class(filename)</span>
+0042     <span class="comment">%save(filename,'Ftot')</span>
+0043 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

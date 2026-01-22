@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotRheobase</title>
+  <meta name="keywords" content="plotRheobase">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>plotRheobase
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 files = dir;
+0002 voltageFig = figure();
+0003 VzzFig     = figure();
+0004 legendString = [];
+0005 <span class="comment">%colors = ['k',</span>
+0006 <span class="keyword">for</span> i=1:length(files)
+0007     file = files(i).name;
+0008     <span class="keyword">if</span> ~isempty(strfind(file,<span class="string">'sauvegarde'</span>))
+0009         load(file)
+0010         figure(voltageFig);
+0011         plot(pulseTEnd, VSauvegarde);
+0012         hold all;
+0013         Vzz = -2*VSauvegarde;
+0014         figure(VzzFig);
+0015         plot(pulseTEnd, Vzz);
+0016         hold all;
+0017         legendString = [legendString sprintf(<span class="string">'%2.1f µm;'</span>,fiberD*1e6)];
+0018     <span class="keyword">end</span>
+0019 <span class="keyword">end</span>
+0020 
+0021 legendString = strsplit(legendString, <span class="string">';'</span>);
+0022 figure(voltageFig)
+0023 legend(legendString);
+0024 xlabel(<span class="string">'Pulse Time [s]'</span>);
+0025 ylabel(<span class="string">'Voltage of the non-zero node'</span>);
+0026 figure(VzzFig)
+0027 legend(legendString);
+0028 xlabel(<span class="string">'Pulse Time [s]'</span>);
+0029 ylabel(<span class="string">'VzzNJ'</span>);
+0030 
+0031 
+0032 
+0033</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

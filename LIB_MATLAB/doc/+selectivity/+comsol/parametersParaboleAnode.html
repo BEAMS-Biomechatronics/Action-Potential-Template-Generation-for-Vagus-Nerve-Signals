@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parametersParaboleAnode</title>
+  <meta name="keywords" content="parametersParaboleAnode">
+  <meta name="description" content="This function make a parameters.mat file containing the default">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>parametersParaboleAnode
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This function make a parameters.mat file containing the default</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function parametersParaboleAnode() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> This function make a parameters.mat file containing the default
+ parameters for the paraboleAnodeModel (COMSOL). 
+ This funcion should not be changed directly.
+ If you want to change a parameter :
+ 1) call this function
+ 2) load parameters.mat
+ 3) Once it has been called juste change in your current code the
+ parameters you want to change. 
+ If using a function which calls this function, then run a simulation by
+ itself. But you want to change parameters automaically. Then you should
+ use the other file parametersChange.mat.
+ This file is automatically loaded at the end of this function. 
+ You just have to save the parameters you want to change in a file called
+ 'parametersChange.mat'.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fascicles.html" class="code" title="">fascicles</a>	</li><li><a href="paraboleAnode.html" class="code" title="function out = paraboleAnode()">paraboleAnode</a>	</li><li><a href="../../+selectivity/+stimWaveForm/stimWaveFormLinesByPieces.html" class="code" title="">stimWaveFormLinesByPieces</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+anodalBlock/detectActivationWithShift.html" class="code" title="function [varargout] = detectActivationWithShift(varargin)">detectActivationWithShift</a>	detectActivationWithShift(varargin)</li><li><a href="../../+selectivity/+anodalBlock/detectTransition.html" class="code" title="function [varargout] = detectTransition()">detectTransition</a>	detectTransition()</li><li><a href="../../+selectivity/+anodalBlock/findOptimizedWF.html" class="code" title="function [WFOptim] = findOptimizedWF(positionFibre)">findOptimizedWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+anodalBlock/stepByStepWF.html" class="code" title="function [WFOptim] = stepByStepWF(positionFibre)">stepByStepWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+optimAnode/optimizeAlpha.html" class="code" title="function optimizeAlpha()">optimizeAlpha</a>	Load package to establish parameters</li><li><a href="../../+selectivity/+optimAnode/plotMaxAFFunctionOfCuffL.html" class="code" title="function plotMaxAFFunctionOfCuffL()">plotMaxAFFunctionOfCuffL</a>	PLOTMAXAFFUNCTIONOFCUFFL</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001     <a name="_sub0" href="#_subfunctions" class="code">function parametersParaboleAnode()</a>
+0002 <span class="comment">% This function make a parameters.mat file containing the default</span>
+0003 <span class="comment">% parameters for the paraboleAnodeModel (COMSOL).</span>
+0004 <span class="comment">% This funcion should not be changed directly.</span>
+0005 <span class="comment">% If you want to change a parameter :</span>
+0006 <span class="comment">% 1) call this function</span>
+0007 <span class="comment">% 2) load parameters.mat</span>
+0008 <span class="comment">% 3) Once it has been called juste change in your current code the</span>
+0009 <span class="comment">% parameters you want to change.</span>
+0010 <span class="comment">% If using a function which calls this function, then run a simulation by</span>
+0011 <span class="comment">% itself. But you want to change parameters automaically. Then you should</span>
+0012 <span class="comment">% use the other file parametersChange.mat.</span>
+0013 <span class="comment">% This file is automatically loaded at the end of this function.</span>
+0014 <span class="comment">% You just have to save the parameters you want to change in a file called</span>
+0015 <span class="comment">% 'parametersChange.mat'.</span>
+0016 
+0017     import selectivity.utilities.*
+0018     import selectivity.comsol.*
+0019     import selectivity.stimWaveForm.*
+0020 
+0021 
+0022     <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0023     <span class="comment">%           COMSOL MODEL                             %</span>
+0024     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0025     <span class="comment">% nerve</span>
+0026     nerveD              = 1.35e-3;                  <span class="comment">%anciennement 1.9e-3</span>
+0027     fascicleD           = 400e-6;                   <span class="comment">%anciennement fasciculeD</span>
+0028     fasciculeLayer      = 50e-6;                    <span class="comment">%aucune importance, le perineurium fait 5% du diamètre (Deurloo2004 ?)</span>
+0029     nerveL              = 40e-3;
+0030     nerveLComsol        = 40e-3;
+0031     
+0032     <span class="comment">%conductivities of medium</span>
+0033     sigmaSaline         = 2;
+0034     sigmaEpineurium     = 0.008;
+0035     sigmaPerineurium    = 0.00336;
+0036     sigmaFasciculexy    = 0.08;
+0037     sigmaFasciculez     = 0.5;
+0038     sigmaConjonctive    = 0.16;
+0039     
+0040     sigmaEXT = sigmaConjonctive;                    <span class="comment">% conductivité externe à la fibre dans la cuff.</span>
+0041     
+0042     <span class="comment">% cuff electrode</span>
+0043     ringTorusD          = 30e-6;                    <span class="comment">% ring donut radius</span>
+0044     ringCuffD           = 1.9e-3*1.5;               <span class="comment">% cuff D</span>
+0045     ring1D              = 1.95e-3;                  <span class="comment">% [m] diamètre de l'anneau 1.</span>
+0046     xRing1D             = 0;
+0047     yRing1D             = 0;
+0048     ring2D              = 2.6e-3;                   <span class="comment">% [m] diamètre de l'anneau 2.</span>
+0049     xRing2D             = 0;
+0050     yRing2D             = 0;
+0051     ringD               = 2e-3;                     <span class="comment">% [m] distance entre les deux anneaux.</span>
+0052     cuffL               = 5.1e-3;                   <span class="comment">% [m]longueur de la cuff (isolant)</span>
+0053     alphaP              = -91.865395;               <span class="comment">%-86.35;       % -38</span>
+0054 
+0055     courant             = 1;                        <span class="comment">%A, régle de trois pour le courant réel.</span>
+0056     
+0057     
+0058     
+0059     
+0060     
+0061     
+0062     <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0063     <span class="comment">%           Various parameters                       %</span>
+0064     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0065 
+0066  
+0067   
+0068     nProc           = feature(<span class="string">'numcores'</span>);          <span class="comment">% Nombre de processeurs dispo sur la machine</span>
+0069     
+0070     
+0071     <span class="comment">%Paramètres du script modifiable durant les simulations.</span>
+0072     <span class="comment">%(MATLAB)</span>
+0073     
+0074     fibreD          = 5e-6;                         <span class="comment">%[m] diamètre de la fibre, vierge.</span>
+0075     current1        = 0;                            <span class="comment">%[A] courant relatif, résultat de find current. Set to 0 if findCurrent must be used to determine it.</span>
+0076     current2        = 0;                            <span class="comment">%[A] courant prepulse, if 0 : not used;              0.0021445;</span>
+0077     shift           = 0;
+0078 
+0079     <span class="comment">%densité des sondes dans chacun des fascicules sont donnés sous la forme</span>
+0080     <span class="comment">%suivante: Une sonde au centre de la fascicule. Ensuite, position sur des cercles concentriques.</span>
+0081     <span class="comment">%(nCouche) représente le nombre de couches voulues (nombre de cercles).</span>
+0082     <span class="comment">%(nInit) représente le nombre de points sur le premier cercle. Ensuite sur</span>
+0083     <span class="comment">%les cercles suivants, la densité de point est identique à la première</span>
+0084     <span class="comment">%(même longueur d'arc de cercle entre les points.</span>
+0085     <span class="comment">% decaprited</span>
+0086     nFibreLayerPerFasicle         = 3;          <span class="comment">%anciennement nCouche</span>
+0087     nFibreFirstLayer              = 4;          <span class="comment">%anciennement nInit</span>
+0088 
+0089     
+0090     <span class="comment">% Modèle COMSOL parmi les choix suivants :</span>
+0091     <span class="comment">% - paraboleAnode</span>
+0092     <span class="comment">% - twoRings</span>
+0093     <span class="comment">% - twoPairsTwoRings</span>
+0094     <span class="comment">% geometryName is used to save Data.</span>
+0095     
+0096     comsolModel             = @<a href="paraboleAnode.html" class="code" title="function out = paraboleAnode()">paraboleAnode</a>; 
+0097     geometryName            = <span class="string">'paraboleAnode'</span>;
+0098     listMainProperties      = {<span class="string">'ring1D'</span>, <span class="string">'ring2D'</span>, <span class="string">'ringD'</span>, <span class="string">'cuffL'</span>, <span class="string">'alphaP'</span>};
+0099 
+0100 
+0101     <span class="comment">% Nombre de niveau de décallage.</span>
+0102     nNodeShift      = 5;                       <span class="comment">%10</span>
+0103     
+0104     
+0105     <span class="comment">% Temperature in celsius</span>
+0106     TC                  = 20;
+0107 
+0108     <span class="comment">% Choice of WaveForm</span>
+0109     <span class="comment">% see &lt;selectivity.stimWaveForm.*&gt; for choice available.</span>
+0110     <span class="comment">% you can implement your own stimWaveForm by doing a class inheritance</span>
+0111     <span class="comment">% of &lt;selectivity.stimWaveForm.stimWaveForm&gt; abstract class.</span>
+0112     <span class="comment">% If current2 = 0, WF2 will have no effect.</span>
+0113     <span class="comment">%WF                  = stimWaveFormLinesByPieces();</span>
+0114     WF1                  = <a href="../../+selectivity/+stimWaveForm/stimWaveFormLinesByPieces.html" class="code" title="">stimWaveFormLinesByPieces</a>(1.1e-3,    5e-5,   [[0:1e-4:5e-3]; ones(size([0:1e-4:5e-3]))]);
+0115     WF2                  = <a href="../../+selectivity/+stimWaveForm/stimWaveFormLinesByPieces.html" class="code" title="">stimWaveFormLinesByPieces</a>(30e-6,     1e-6,   [[0:1e-4:5e-3]; ones(size([0:1e-4:5e-3]))]);
+0116     
+0117     <span class="comment">% when running optimization procedure, this variable gives you</span>
+0118     <span class="comment">% the oppportunity to keep all data or not. At the end of</span>
+0119     <span class="comment">% mapActivationXXX, the data are deleted.</span>
+0120     recordVm    = false;
+0121     recordFig   = false;
+0122     
+0123     
+0124     <span class="comment">%% PARAMETERS FOR OPTIMIZING WF PROCEDURE</span>
+0125     
+0126     <span class="comment">% you have the choice to change those parameters in optimxxx.m script</span>
+0127     <span class="comment">% OR you can load it from a previous optimizing procedure (load the</span>
+0128     <span class="comment">% result.mat file after you have rename it in the form optimxxx.mat).</span>
+0129     
+0130     <span class="comment">% number of parameters to optimize</span>
+0131     nVarOptim   = 5;
+0132     
+0133     <span class="comment">% times = [t1 t2 t3 t4 t5 t6 t7 t8], only t3 -&gt; t7 have variables</span>
+0134     <span class="comment">% amplitude.</span>
+0135     times               = [0  0.25e-3   0.4e-3                  0.6e-3                  0.8e-3                  1.2e-3                      1.5e-3                  5e-3];            
+0136     
+0137     <span class="comment">% amplitude values for inital guess of optimizing procedure.</span>
+0138     amp                 = zeros(1,length(times));
+0139     
+0140     <span class="comment">% WF1 properties (avoiding anodal break)</span>
+0141     WF1RampTime             = 2.1e-3; <span class="comment">%s</span>
+0142     WF1RampDelayOfSlope     = 5e-5;   <span class="comment">%s</span>
+0143     
+0144     
+0145     <span class="comment">% optimizer parameters by default</span>
+0146     MaxMeshSize = 2e-3;
+0147     TolX        = 1e-5;
+0148     
+0149     
+0150     <span class="comment">% Special optim dichotomie (detectTransition)</span>
+0151     nLevelDicho = 3;
+0152     
+0153     
+0154     <span class="comment">% finding current1 if not given</span>
+0155     fibreDSeuil         = 7.5e-6;       <span class="comment">%diameter of the fiber for dichotomic research</span>
+0156     
+0157     
+0158     
+0159     <span class="comment">%cible</span>
+0160     cible       = zeros(1,12);
+0161     cible(1:6)  = 1;
+0162     <span class="comment">% when using non regular position option, this parameter gives you the</span>
+0163     <span class="comment">% opportunity to choose the position of the transition of the target.</span>
+0164     <span class="comment">% In this case, cible must be asymetrical (111 000).</span>
+0165     positionCible = 0.5;
+0166     
+0167     
+0168     
+0169     <span class="comment">%% fascicle geometry (class fascicles)</span>
+0170     <span class="comment">% by default, you can use : fasciclesGeometry   = fascicles(nerveD);</span>
+0171     <span class="comment">% if you want more realistic shape of fascicles, provide polyShape cell</span>
+0172     <span class="comment">% which contains contour of fascicles in the form of contour polygon.</span>
+0173     <span class="comment">% see file humanSciatic.mat for example.</span>
+0174     <span class="comment">%numberOfFascicles   = 29;</span>
+0175     <span class="comment">% load data fascicles : polyShape</span>
+0176     load frogSciatic; <span class="comment">% frogSciatic, humanSciatic</span>
+0177     
+0178     fasciclesGeometry   = <a href="fascicles.html" class="code" title="">fascicles</a>(nerveD, polyShape, numberOfFascicles, 1);
+0179     epFascicleLayer     = 90e-6; <span class="comment">%epaisseur layer fascicle (90µm pour grosse, 50µm petite; ou 5% diamètre fascicule)</span>
+0180     
+0181     <span class="comment">% density of points for 2D results</span>
+0182     density2D           = 500/(pi*(nerveD/2)^2);
+0183     
+0184     <span class="comment">%  1D Simulation will be running on a line defines by both parameters.</span>
+0185     line1D              = [0 0; nerveD/2 0];            <span class="comment">% [x1 y1; x2 y2] line for 1D simulation</span>
+0186     nPoints1D           = 12;
+0187     
+0188     <span class="comment">%  0D Simulation will be on the position defined here</span>
+0189     positionFiber0D     = [0 0];
+0190     
+0191     fiberSize           = [5e-6:1.25e-6:10e-6];
+0192     
+0193     
+0194     <span class="keyword">if</span> exist(<span class="string">'parametersChange.mat'</span>, <span class="string">'file'</span>) == 2
+0195         load(<span class="string">'parametersChange.mat'</span>);
+0196     <span class="keyword">end</span>
+0197     
+0198     save(<span class="string">'parameters.mat'</span>);
+0199     
+0200 <span class="keyword">end</span>
+0201</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

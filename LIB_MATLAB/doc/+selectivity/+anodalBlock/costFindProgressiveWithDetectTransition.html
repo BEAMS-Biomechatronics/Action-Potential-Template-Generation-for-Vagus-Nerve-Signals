@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of costFindProgressiveWithDetectTransition</title>
+  <meta name="keywords" content="costFindProgressiveWithDetectTransition">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +anodalBlock -->
+<h1>costFindProgressiveWithDetectTransition
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cost = costFindProgressiveWithDetectTransition(cible, IArray, times, amp, indiceParameters) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="findProgressiveWFUniversal.html" class="code" title="function findProgressiveWFUniversal(hasToFindCurrent1, varargin)">findProgressiveWFUniversal</a>	Optimisation Procedure finding WF optimal for the target</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cost = costFindProgressiveWithDetectTransition(cible, IArray, times, amp, indiceParameters)</a>
+0002     
+0003     load parameters
+0004     
+0005     
+0006     activateCostTransition      = true;
+0007     activateCostAdjacentOrder   = false;
+0008     activateCostGlobalOrder     = false;
+0009     
+0010     
+0011     <span class="comment">% special distribution for the positions</span>
+0012     
+0013     displayMsg = <span class="string">'Values [mA] of '</span>;
+0014     <span class="keyword">for</span> i=1:length(IArray)
+0015         displayMsg = [displayMsg sprintf(<span class="string">'I%d :%0.3f, '</span>,i, IArray(i)*1e3)];
+0016     <span class="keyword">end</span>
+0017     display(displayMsg);
+0018     
+0019     
+0020     ampUpdated                                                      = amp;
+0021     ampUpdated(1,indiceParameters)        = [IArray(1:end)./IArray(end)];
+0022     
+0023     
+0024     <span class="comment">%change parameters</span>
+0025     WF1                         = selectivity.stimWaveForm.stimWaveFormLinesByPieces(WF1RampTime, WF1RampDelayOfSlope, [times; ampUpdated], <span class="string">'notNormed'</span>);
+0026     current1                    = IArray(end);
+0027     
+0028         
+0029         
+0030     save(<span class="string">'parametersChange.mat'</span>, <span class="string">'WF1'</span>, <span class="string">'current1'</span>, <span class="string">'-append'</span>);
+0031     
+0032     folderName = selectivity.anodalBlock.detectTransition();
+0033     
+0034     <span class="comment">% plot result and save data</span>
+0035     selectivity.anodalBlock.mapActivationWithShiftTwoColors1D(folderName);
+0036     
+0037     <span class="comment">% retrieve data( AP or Not AP)</span>
+0038     contentResultDirectory      = dir(folderName);
+0039     all_files                   = contentResultDirectory(~[contentResultDirectory(:).isdir]);
+0040     
+0041     <span class="comment">% cost computation</span>
+0042     cost = 0;
+0043     lastKFileName = 0;
+0044     transitionPosition = [];
+0045     <span class="keyword">for</span> k=1:numel(all_files)
+0046         <span class="keyword">if</span> strfind(all_files(k).name, <span class="string">'proportion'</span>)
+0047             <span class="comment">%save last k</span>
+0048             lastKFileName = k;
+0049             load([<span class="string">'./'</span> folderName <span class="string">'/'</span> all_files(k).name], <span class="string">'partOfAP'</span>, <span class="string">'diameterArray'</span>, <span class="string">'currentDiameter'</span>);
+0050             
+0051             <span class="comment">%retrieve diameter array needed for ponderation</span>
+0052             diameterArraySorted     = sort(diameterArray); 
+0053             <span class="comment">% cas pair</span>
+0054             <span class="comment">% ponderationFactor = [3 2 1 0 -1 -2 -3] (example)</span>
+0055             ponderationFactor       = [];
+0056             elemMilieu              = 0;
+0057             <span class="keyword">if</span> mod(numel(diameterArray),2) == 0
+0058                 elemMilieu              = floor(numel(diameterArray)/2);
+0059                 ponderationFactor       = [elemMilieu-1:-1:1 zeros(1,elemMilieu+1)] + [zeros(1,elemMilieu+1) -1:-1:-(elemMilieu-1)];
+0060 
+0061             <span class="keyword">else</span>
+0062                 elemMilieu              = ceil(numel(diameterArray)/2);
+0063                 ponderationFactor       = [elemMilieu-1:-1:-elemMilieu+1];
+0064 
+0065             <span class="keyword">end</span>
+0066             
+0067             <span class="comment">%looking for ponderation cost in diameterArray</span>
+0068             indiceDiameter          = find(diameterArraySorted==currentDiameter);
+0069             currentPonderation      = ponderationFactor(indiceDiameter);   
+0070             currentPonderation      = 1+abs(currentPonderation)<span class="comment">%elemMilieu-abs(currentPonderation);</span>
+0071             
+0072             <span class="comment">% checking for transition position for the current diameter and</span>
+0073             <span class="comment">% saving it at the right location (indiceDiameter).</span>
+0074             transitionPosition(indiceDiameter)    = sum(partOfAP);
+0075             
+0076             
+0077             <span class="comment">% cost function</span>
+0078             
+0079             currentDiameter
+0080             costUnMatchHorsCible    = sum((ones(size(cible))-cible).*partOfAP)^2
+0081             costUnMatchCible        = sum(cible.*(ones(size(partOfAP))-partOfAP))^2
+0082             costTransition          = (length(partOfAP)~=sum(partOfAP) &amp;&amp; sum(partOfAP)~=0)*(-length(partOfAP))*1e7;
+0083                       
+0084             <span class="comment">% basic cost</span>
+0085             <span class="keyword">if</span> activateCostTransition
+0086                 cost = cost + currentPonderation*(costUnMatchHorsCible + costUnMatchCible) + costTransition;
+0087             <span class="keyword">else</span>
+0088                 cost = cost + currentPonderation*(costUnMatchHorsCible + costUnMatchCible);
+0089             <span class="keyword">end</span>
+0090             
+0091             
+0092             
+0093 <span class="comment">%             %most complex cost</span>
+0094 <span class="comment">%             if currentPonderation &lt; 0</span>
+0095 <span class="comment">%                 cost = cost - currentPonderation * costUnMatchCible;</span>
+0096 <span class="comment">%             elseif currentPonderation &gt; 0</span>
+0097 <span class="comment">%                 cost = cost + currentPonderation * costUnMatchHorsCible;</span>
+0098 <span class="comment">%             end</span>
+0099         <span class="keyword">end</span>
+0100     <span class="keyword">end</span> 
+0101     
+0102     <span class="comment">% global order condition</span>
+0103     <span class="keyword">if</span> activateCostGlobalOrder
+0104         isInOrder = true;
+0105         <span class="keyword">for</span> k=1:numel(transitionPosition)-1
+0106             <span class="keyword">if</span> isInOrder
+0107                 <span class="keyword">if</span> transitionPosition(k)&lt;=transitionPosition(k+1)
+0108                     isInOrder = false;
+0109                 <span class="keyword">end</span>
+0110             <span class="keyword">end</span>
+0111         <span class="keyword">end</span>
+0112 
+0113         <span class="comment">% When not in order, the cost function get a big penalty</span>
+0114         <span class="keyword">if</span> ~isInOrder
+0115             cost = cost + 1e5;
+0116         <span class="keyword">end</span>
+0117     <span class="keyword">end</span>
+0118  
+0119     <span class="comment">% one by one order condition</span>
+0120     <span class="keyword">if</span> activateCostAdjacentOrder
+0121         costOrder = 0;
+0122         <span class="keyword">for</span> k=1:numel(transitionPosition)-1
+0123             <span class="keyword">for</span> l=k+1:numel(transitionPosition)
+0124                 <span class="keyword">if</span> transitionPosition(k)&lt;=transitionPosition(l)
+0125                     costOrder = costOrder + round(numel(cible)^2);
+0126                 <span class="keyword">end</span>
+0127             <span class="keyword">end</span>
+0128         <span class="keyword">end</span>
+0129 
+0130         cost = cost + costOrder;
+0131     <span class="keyword">end</span>
+0132     
+0133     
+0134     
+0135    <span class="comment">% recording best cost and folder name of the best solution</span>
+0136     files_current_dir               = dir();
+0137     files_current_dir_structure     = struct2cell(files_current_dir);
+0138     fileNameCostDoNotExist          = ~any(ismember(files_current_dir_structure(1,:),<span class="string">'cost.mat'</span>));
+0139     bestCost                        = 1e30;
+0140     
+0141     <span class="keyword">if</span> fileNameCostDoNotExist
+0142         bestCost                    = cost;
+0143         bestCostFolderName          = folderName;
+0144     <span class="keyword">else</span>
+0145         load cost
+0146         <span class="keyword">if</span> bestCost &gt; cost 
+0147             bestCost            = cost;
+0148             bestCostFolderName  = folderName;
+0149         <span class="keyword">end</span>
+0150     <span class="keyword">end</span>
+0151     save(<span class="string">'cost.mat'</span>, <span class="string">'bestCost'</span>, <span class="string">'bestCostFolderName'</span>);
+0152     
+0153     <span class="comment">% recording cost in the actual folder</span>
+0154     save([<span class="string">'./'</span> folderName <span class="string">'/'</span> all_files(lastKFileName).name], <span class="string">'cost'</span>, <span class="string">'-append'</span>);
+0155     
+0156     <span class="comment">% display cost</span>
+0157     display([<span class="string">'The value of cost Function is : '</span> num2str(cost)]);
+0158    
+0159 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

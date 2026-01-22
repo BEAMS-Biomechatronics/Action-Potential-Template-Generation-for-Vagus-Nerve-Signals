@@ -1,0 +1,22 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  fascicles -> fascicles;
+  parametersParaboleAnode -> fascicles;
+  parametersParaboleAnode -> paraboleAnode;
+  parametersTwoPairsTwoRings -> TwoPairsTwoRings;
+  parametersTwoRings -> twoRings;
+
+  TwoPairsTwoRings [URL="TwoPairsTwoRings.html"];
+  dot [URL="dot.html"];
+  drawConfigParaboleAnode [URL="drawConfigParaboleAnode.html"];
+  drawConfigTwoRings [URL="drawConfigTwoRings.html"];
+  fascicles [URL="fascicles.html"];
+  getExternalVoltage [URL="getExternalVoltage.html"];
+  paraboleAnode [URL="paraboleAnode.html"];
+  parametersDot [URL="parametersDot.html"];
+  parametersParaboleAnode [URL="parametersParaboleAnode.html"];
+  parametersTwoPairsTwoRings [URL="parametersTwoPairsTwoRings.html"];
+  parametersTwoRings [URL="parametersTwoRings.html"];
+  plot2DCOMSOL [URL="plot2DCOMSOL.html"];
+  twoRings [URL="twoRings.html"];
+}

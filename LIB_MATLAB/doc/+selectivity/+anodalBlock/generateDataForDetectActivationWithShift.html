@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generateDataForDetectActivationWithShift</title>
+  <meta name="keywords" content="generateDataForDetectActivationWithShift">
+  <meta name="description" content="load result from the given folder">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +anodalBlock -->
+<h1>generateDataForDetectActivationWithShift
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>load result from the given folder</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function generateDataForDetectActivationWithShift(resultDirectory) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> load result from the given folder</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function generateDataForDetectActivationWithShift(resultDirectory)</a>
+0002     
+0003     <span class="comment">% load result from the given folder</span>
+0004     load([resultDirectory <span class="string">'/parameters.mat'</span>]);
+0005     
+0006     <span class="comment">% load parametersChange (this is usefull if you want to change some</span>
+0007     <span class="comment">% parameters that differ from the resultDirectory such as nPoints1D.</span>
+0008     load parametersChange
+0009     
+0010     nPoints1D           = 36;
+0011     
+0012     <span class="comment">% activate record of Vm and figure</span>
+0013     <span class="comment">% (This option is desactivated when using optimisation procedure in</span>
+0014     <span class="comment">% order to reduce production of data, this is the reason you may want</span>
+0015     <span class="comment">% to produce some specific data).</span>
+0016     recordVm    = true;
+0017     recordFig   = true;
+0018     
+0019     <span class="comment">% save all previous parameters with change made before.</span>
+0020     save(<span class="string">'parametersChange.mat'</span>);
+0021     
+0022     <span class="comment">% run</span>
+0023     newFolderResult = selectivity.anodalBlock.detectActivationWithShift(<span class="string">'1D'</span>);
+0024     
+0025     <span class="comment">% analyse data generated (it usefull to see if old result are well</span>
+0026     <span class="comment">% reproduced).</span>
+0027     selectivity.anodalBlock.mapActivationWithShiftTwoColors1D(newFolderResult);            
+0028     
+0029 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

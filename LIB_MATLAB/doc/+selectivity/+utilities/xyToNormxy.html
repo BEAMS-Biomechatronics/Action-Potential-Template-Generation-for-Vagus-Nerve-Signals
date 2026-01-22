@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of xyToNormxy</title>
+  <meta name="keywords" content="xyToNormxy">
+  <meta name="description" content="Conversion from axis coordinates to normalised coordinates [0;1]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +utilities -->
+<h1>xyToNormxy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Conversion from axis coordinates to normalised coordinates [0;1]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function xyN = xyToNormxy(XY, type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Conversion from axis coordinates to normalised coordinates [0;1]
+ type is a string with 'x' or 'y' or 'w' (width) or 'h' (height)
+ XY is a vector with two x or two y component</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+comsol/drawConfigParaboleAnode.html" class="code" title="function fig = drawConfigParaboleAnode()">drawConfigParaboleAnode</a>	</li><li><a href="../../+selectivity/+comsol/drawConfigTwoRings.html" class="code" title="function fig = drawConfigParaboleAnode()">drawConfigTwoRings</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function xyN = xyToNormxy(XY, type)</a>
+0002     <span class="comment">% Conversion from axis coordinates to normalised coordinates [0;1]</span>
+0003     <span class="comment">% type is a string with 'x' or 'y' or 'w' (width) or 'h' (height)</span>
+0004     <span class="comment">% XY is a vector with two x or two y component</span>
+0005     
+0006     xyN = 0;
+0007     
+0008     xLim = get(gca,<span class="string">'XLim'</span>);
+0009     yLim = get(gca,<span class="string">'YLim'</span>);
+0010     
+0011     axisPositon = get(gca, <span class="string">'position'</span>);
+0012      
+0013     axisLeft    = axisPositon(1);
+0014     axisBottom  = axisPositon(2);
+0015     axisWidth   = axisPositon(3);
+0016     axisHeight  = axisPositon(4);
+0017     
+0018     xLow    = xLim(1);
+0019     xUp     = xLim(2);
+0020     yLow    = yLim(1);
+0021     yUp     = yLim(2);
+0022     diffX   = xUp-xLow;
+0023     diffY   = yUp-yLow;
+0024     
+0025     <span class="keyword">if</span> strfind(type, <span class="string">'x'</span>)
+0026         xyN = ((XY-xLow)*axisWidth/diffX)+axisLeft;
+0027     <span class="keyword">elseif</span> strfind(type, <span class="string">'y'</span>)
+0028         xyN = ((XY-yLow)*axisHeight/diffY)+axisBottom;
+0029     <span class="keyword">elseif</span> strfind(type, <span class="string">'w'</span>)
+0030         xyN = XY/diffX*axisWidth;
+0031     <span class="keyword">elseif</span> strfind(type, <span class="string">'h'</span>)
+0032         xyN = XY/diffY*axisHeight;
+0033     <span class="keyword">else</span>
+0034         error(<span class="string">'you did not mention type correctly'</span>);
+0035     <span class="keyword">end</span>
+0036     
+0037   
+0038     
+0039     
+0040 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

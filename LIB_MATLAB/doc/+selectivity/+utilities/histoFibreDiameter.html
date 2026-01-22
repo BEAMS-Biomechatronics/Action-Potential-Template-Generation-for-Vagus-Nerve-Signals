@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of histoFibreDiameter</title>
+  <meta name="keywords" content="histoFibreDiameter">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +utilities -->
+<h1>histoFibreDiameter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="histoFibreDiameter.html" class="code" title="">histoFibreDiameter</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+anodalBlock/mapActivationWithShiftTwoColors.html" class="code" title="function mapActivationWithShiftTwoColors(resultDirectory)">mapActivationWithShiftTwoColors</a>	mapActivationWithShiftTwoColors(resultDirectory)</li><li><a href="../../+selectivity/+anodalBlock/mapActivationWithShiftTwoColors1D.html" class="code" title="function mapActivationWithShiftTwoColors1D(resultDirectory)">mapActivationWithShiftTwoColors1D</a>	mapActivationWithShiftTwoColors(resultDirectory)</li><li><a href="../../+selectivity/+anodalBlock/traceAP1D.html" class="code" title="function traceAP1D(resultDirectory)">traceAP1D</a>	mapActivationWithShiftTwoColors(resultDirectory)</li><li><a href="histoFibreDiameter.html" class="code" title="">histoFibreDiameter</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function o = histoFibreDiameter(o)</a></li><li><a href="#_sub2" class="code">function nRangeArrayNormed = getProportion(o,varargin)</a></li><li><a href="#_sub3" class="code">function fig = plotHisto(o)</a></li><li><a href="#_sub4" class="code">function saveHisto(o)</a></li><li><a href="#_sub5" class="code">function loadHisto(o)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 classdef <a href="histoFibreDiameter.html" class="code" title="">histoFibreDiameter</a> &lt; handle
+0002    properties
+0003       distribution;
+0004       fileNameToSaveHisto;
+0005    <span class="keyword">end</span>
+0006    methods
+0007        <a name="_sub0" href="#_subfunctions" class="code">function o = histoFibreDiameter(o)</a>
+0008            <span class="comment">% default distribution</span>
+0009            o.distribution = [[3 4 5 6 7 8 9 10 11 12 13]*1e-6; 1 3 10 16 23 16 18 8 3 1 1];
+0010            o.fileNameToSaveHisto = <span class="string">'hFD.mat'</span>;
+0011        <span class="keyword">end</span>
+0012        
+0013        <a name="_sub1" href="#_subfunctions" class="code">function nRangeArrayNormed = getProportion(o,varargin)</a>
+0014             <span class="comment">% getProportion([ fiberDiameter1 fiberDiameter2 fiberDiameter3 ....] )</span>
+0015             <span class="comment">% The array must not be sorted before to call this</span>
+0016             <span class="comment">% function.</span>
+0017             <span class="comment">%</span>
+0018             <span class="comment">% return nRangeArrayNormed = (nInt, 1) with prop of each intervale in the</span>
+0019             <span class="comment">% same order than given in the input argument.</span>
+0020             
+0021             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0022             <span class="comment">% input management</span>
+0023             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0024             sizeNargin1 = [];
+0025             <span class="keyword">if</span> nargin == 2
+0026                 sizeNargin1 = size(varargin{1});
+0027                 <span class="keyword">if</span> sizeNargin1(1) ~= 1
+0028                     error(<span class="string">'histoFibreDiameter:getProportion'</span>,<span class="string">'Wrong number of input parameters'</span>);
+0029                 <span class="keyword">end</span>
+0030             <span class="keyword">else</span>
+0031                 error(<span class="string">'histoFibreDiameter:getProportion'</span>,<span class="string">'Wrong number of input parameters'</span>);
+0032             <span class="keyword">end</span>
+0033            
+0034             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0035             <span class="comment">%%  Input parameter</span>
+0036             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0037             diameterArray = varargin{1};
+0038             <span class="comment">% number of fiber diameter in the simulation</span>
+0039             nDiameter = length(diameterArray);
+0040             <span class="comment">% Edges of the range for each fibre diameter.. to fill</span>
+0041             <span class="comment">% [ limInfD1 limInfD2 limInfD3 ]</span>
+0042             <span class="comment">% [ limSupD1 limSupD2 limSupD3 ]</span>
+0043             rangeOfDiameterValidity     = zeros(2,nDiameter);
+0044            
+0045            
+0046                       
+0047             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0048             <span class="comment">%% Processing</span>
+0049             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0050            
+0051             <span class="comment">% First sort the diameters by ascending order</span>
+0052             diameterArraySorted                         = sort(diameterArray);
+0053            
+0054            
+0055             <span class="comment">% set edges of the diameter range with central value</span>
+0056             <span class="comment">%(or the most available value) = to fiber diameter</span>
+0057             <span class="keyword">for</span> k = 1:nDiameter
+0058                 <span class="keyword">if</span> k==1
+0059                     rangeOfDiameterValidity(:,1)        = [o.distribution(1,1); (diameterArraySorted(1)+diameterArraySorted(2))/2];
+0060                 <span class="keyword">elseif</span> k==nDiameter
+0061                     rangeOfDiameterValidity(:,nDiameter)      = [(diameterArraySorted(nDiameter-1)+diameterArraySorted(nDiameter))/2; o.distribution(1,end)];
+0062                 <span class="keyword">else</span>
+0063                     rangeOfDiameterValidity(:,k)        = [(diameterArraySorted(k-1)+diameterArraySorted(k))/2; (diameterArraySorted(k)+diameterArraySorted(k+1))/2];
+0064                 <span class="keyword">end</span>
+0065             <span class="keyword">end</span>
+0066 
+0067             <span class="comment">% range step</span>
+0068             nRangeArraySorted           = [];
+0069             gapRangeDiameterFiber       = o.distribution(1,2)-o.distribution(1,1);
+0070             <span class="keyword">for</span> k = 1:nDiameter
+0071                   k
+0072                 indiceRange             = find(o.distribution(1,:) &gt;=  rangeOfDiameterValidity(1,k)-0.5*gapRangeDiameterFiber &amp; o.distribution(1,:) &lt;=  rangeOfDiameterValidity(2,k)+0.5*gapRangeDiameterFiber);
+0073                 propTemp                = ones(size(indiceRange));
+0074 
+0075                 propTemp(1)             = (0.5*gapRangeDiameterFiber+rangeOfDiameterValidity(1,k)-o.distribution(1,indiceRange(1)))/gapRangeDiameterFiber;
+0076                 propTemp(end)           = (rangeOfDiameterValidity(2,k)-(o.distribution(1,indiceRange(end))-0.5*gapRangeDiameterFiber))/gapRangeDiameterFiber;
+0077                 
+0078                 nRange = o.distribution(2,indiceRange)*propTemp';
+0079                 nRangeArraySorted = [nRangeArraySorted nRange];
+0080             <span class="keyword">end</span>
+0081             
+0082             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0083             <span class="comment">%% Conditioning of output variable</span>
+0084             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0085             <span class="comment">% Set the propotion for each range around one fiber diameter</span>
+0086             <span class="comment">% value in the same order than the files order (or the same</span>
+0087             <span class="comment">% order than the diameterArray order).</span>
+0088             <span class="comment">% Watch out, the loop iterates in the same way than file name</span>
+0089             <span class="comment">% LOOP</span>
+0090             nRangeArray = [];
+0091             <span class="keyword">for</span> k=1:nDiameter
+0092                 indInArraySorted    = find(diameterArraySorted == diameterArray(k));
+0093                 nRange              = nRangeArraySorted(indInArraySorted);
+0094                 nRangeArray         = [nRangeArray nRange];
+0095             <span class="keyword">end</span>
+0096             nRangeArrayNormed       = nRangeArray/sum(nRangeArray);
+0097             
+0098        <span class="keyword">end</span>
+0099        <a name="_sub2" href="#_subfunctions" class="code">function fig = plotHisto(o)</a>
+0100 
+0101             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0102             <span class="comment">%%          HISTOGRAM of fiber Diameter                   %%</span>
+0103             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0104 
+0105             fig = figure()
+0106             bar(o.distribution(1,:)*1e6,o.distribution(2,:))
+0107             xlabel(<span class="string">'Fiber diameter [µm]'</span>);
+0108             ylabel(<span class="string">'Relative number of fiber in the range'</span>);
+0109        <span class="keyword">end</span>
+0110        
+0111        <a name="_sub3" href="#_subfunctions" class="code">function saveHisto(o)</a>
+0112            distribution = o.distribution;
+0113            save(o.fileNameToSaveHisto, <span class="string">'distribution'</span>);
+0114        <span class="keyword">end</span>
+0115        
+0116        <a name="_sub4" href="#_subfunctions" class="code">function loadHisto(o)</a>
+0117            load(o.fileNameToSaveHisto);
+0118            o.distribution = distribution;
+0119        <span class="keyword">end</span>
+0120            
+0121    <span class="keyword">end</span>
+0122 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

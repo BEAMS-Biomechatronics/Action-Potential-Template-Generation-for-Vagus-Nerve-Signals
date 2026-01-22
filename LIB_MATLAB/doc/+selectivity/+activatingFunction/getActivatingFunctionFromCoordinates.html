@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getActivatingFunctionFromCoordinates</title>
+  <meta name="keywords" content="getActivatingFunctionFromCoordinates">
+  <meta name="description" content="[z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>getActivatingFunctionFromCoordinates
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>[z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [z, Vzz, Ve] = getActivatingFunctionFromCoordinates(model, fiberD, XY) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> [z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)
+ send back the basic activating function and the coordinates of the
+ corrensponding nodes.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getActivatingFunction.html" class="code" title="function Vzz = getActivatingFunction(Ve)">getActivatingFunction</a>	getActivatingFunction</li><li><a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>	getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage</li><li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [z, Vzz, Ve] = getActivatingFunctionFromCoordinates(model, fiberD, XY)</a>
+0002 <span class="comment">% [z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)</span>
+0003 <span class="comment">% send back the basic activating function and the coordinates of the</span>
+0004 <span class="comment">% corrensponding nodes.</span>
+0005 
+0006 
+0007     import selectivity.comsol.*
+0008     import selectivity.utilities.*
+0009     import selectivity.activatingFunction.*
+0010     import selectivity.fibreModel.fibre.*
+0011     import com.comsol.model.*
+0012     import com.comsol.model.util.*
+0013 
+0014   
+0015     <span class="comment">% Load the variables now if made any change.</span>
+0016     load(<span class="string">'parameters.mat'</span>);
+0017 
+0018     <span class="comment">% Coordinates</span>
+0019     nFibreLayerPerFasicle       = 5;
+0020         
+0021    
+0022     fig                         = figure();
+0023 
+0024    
+0025     
+0026     <span class="comment">% calcul de la longueur internodale à partie de fiberD</span>
+0027     internodalLengthFiber       = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fiberD,1,[0],20, 0, 0);
+0028     lInternodal                 = internodalLengthFiber.L;
+0029     <span class="comment">% nombre de noeuds sur la longueur de la fibre</span>
+0030     nNoeuds                     = floor((nerveL-lInternodal)/lInternodal)+1-2;
+0031            
+0032     
+0033 
+0034     <span class="comment">% Stock the values of virtual Cathode activating function</span>
+0035     z                           = [];
+0036     VzzComplete                 = [];
+0037     Ve                          = [];
+0038 
+0039 
+0040     <span class="keyword">for</span> m = 0:0.1:0.9
+0041         
+0042         
+0043         
+0044 
+0045         
+0046 
+0047         <span class="comment">%changing node Shift</span>
+0048         nNodeShift              = m;
+0049         XYZ                     = zeros(3,1,1,nNoeuds);
+0050         XYZ(1,1,1,:)            = ones(1,nNoeuds)*XY(1);
+0051         XYZ(2,1,1,:)            = ones(1,nNoeuds)*XY(2);
+0052         XYZ(3,1,1,:)            = ones(1,nNoeuds);
+0053         
+0054         <span class="comment">% traitement du cas pair et impair</span>
+0055         numNoeuds = [];
+0056         <span class="keyword">if</span> mod(nNoeuds,2)==1
+0057             numNoeuds = [ceil(-nNoeuds/2):1:floor(nNoeuds/2)];
+0058         <span class="keyword">else</span>
+0059             numNoeuds = [round(-nNoeuds/2):1:round(nNoeuds/2-1)];
+0060         <span class="keyword">end</span>
+0061         
+0062         <span class="comment">%Z, fibre 1,2</span>
+0063         XYZ(3,1,1,:) = [numNoeuds * lInternodal + nNodeShift*lInternodal*ones(1,nNoeuds)]; 
+0064        
+0065         <span class="comment">% Let's start with simulation</span>
+0066         <span class="comment">% Parameters of the simulation are extracted from parameters.mat</span>
+0067         <span class="comment">% and model is solved directly.</span>
+0068 
+0069         VeTemp                      = <a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>(model, XYZ);
+0070         <span class="comment">%keep values of z</span>
+0071         zTemp                       = squeeze(XYZ(3,1,1,:));
+0072         z                           = [z; zTemp(2:end-1)];
+0073 
+0074         <span class="comment">% find Ve2z discrete for central fiber and external fiber</span>
+0075         VzzTemp           = <a href="getActivatingFunction.html" class="code" title="function Vzz = getActivatingFunction(Ve)">getActivatingFunction</a>(squeeze(VeTemp(1,1,:)));
+0076 
+0077         <span class="comment">%keep values of Ve2z discrete for central fiber and external fiber</span>
+0078         VzzComplete                 = [VzzComplete; VzzTemp];
+0079         Ve                          = [Ve; squeeze(VeTemp(2:end-1))];
+0080       
+0081     <span class="keyword">end</span>
+0082 
+0083     <span class="comment">% sort the data due to nodeShift mess up</span>
+0084     size(z)
+0085     size(VzzComplete)
+0086     size(Ve)
+0087     
+0088     [z, sortIndex]              = sort(z);
+0089     Vzz                         = VzzComplete(sortIndex);
+0090     Ve                          = Ve(sortIndex);
+0091 
+0092 
+0093 
+0094 
+0095 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

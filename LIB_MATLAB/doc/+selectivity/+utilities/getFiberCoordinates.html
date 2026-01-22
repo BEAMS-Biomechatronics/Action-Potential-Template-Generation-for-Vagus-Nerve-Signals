@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getFiberCoordinates</title>
+  <meta name="keywords" content="getFiberCoordinates">
+  <meta name="description" content="getFiberCoordinates('1D or 2D',   [zDistance], [ciblePosition])">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +utilities -->
+<h1>getFiberCoordinates
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>getFiberCoordinates('1D or 2D',   [zDistance], [ciblePosition])</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [XYZFiberCoordinates] = getFiberCoordinates(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> getFiberCoordinates('1D or 2D',   [zDistance], [ciblePosition])
+ Get the coordonates of the nodes of the fibers.
+
+ If a second argument zDistance is sent, a mesh is generated with
+ zDistance as distance between nodes.
+
+ Send back XYZFiberCoordinates [xyz(1,2,3),fibreN ,nNoeuds]
+ Variables are extracted from parameters.mat</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+anodalBlock/detectActivationWithShift.html" class="code" title="function [varargout] = detectActivationWithShift(varargin)">detectActivationWithShift</a>	detectActivationWithShift(varargin)</li><li><a href="../../+selectivity/+anodalBlock/detectTransition.html" class="code" title="function [varargout] = detectTransition()">detectTransition</a>	detectTransition()</li><li><a href="../../+selectivity/+anodalBlock/findOptimizedWF.html" class="code" title="function [WFOptim] = findOptimizedWF(positionFibre)">findOptimizedWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+anodalBlock/stepByStepWF.html" class="code" title="function [WFOptim] = stepByStepWF(positionFibre)">stepByStepWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+optimAnode/plotMaxAFFunctionOfCuffL.html" class="code" title="function plotMaxAFFunctionOfCuffL()">plotMaxAFFunctionOfCuffL</a>	PLOTMAXAFFUNCTIONOFCUFFL</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [XYZFiberCoordinates] = getFiberCoordinates(varargin)</a>
+0002 <span class="comment">% getFiberCoordinates('1D or 2D',   [zDistance], [ciblePosition])</span>
+0003 <span class="comment">% Get the coordonates of the nodes of the fibers.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% If a second argument zDistance is sent, a mesh is generated with</span>
+0006 <span class="comment">% zDistance as distance between nodes.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Send back XYZFiberCoordinates [xyz(1,2,3),fibreN ,nNoeuds]</span>
+0009 <span class="comment">% Variables are extracted from parameters.mat</span>
+0010 
+0011 
+0012     import selectivity.fibreModel.fibre.*
+0013     import selectivity.utilities.*
+0014     
+0015     load parameters;
+0016     
+0017     
+0018     caseDimension   = <span class="string">''</span>;
+0019     fiberCase       = 1; <span class="comment">% default case, concern a fiber</span>
+0020     zDistance       = 0;
+0021     ciblePosition   = 0; <span class="comment">%only needed if varargin{3} is not empty</span>
+0022     
+0023     <span class="comment">% treatment of input parameters</span>
+0024     <span class="keyword">if</span> nargin == 1 || nargin == 2 || nargin == 3
+0025         caseDimension               = varargin{1};
+0026         <span class="keyword">if</span> nargin == 2  &amp;&amp; ~isempty(varargin{2})<span class="comment">% not a fiber, just some dots</span>
+0027             fiberCase = 0;
+0028             zDistance = varargin{2};
+0029         <span class="keyword">end</span>            
+0030         <span class="keyword">if</span> nargin == 3
+0031             ciblePosition = varargin{3}; <span class="comment">% en pourcent du rayon</span>
+0032             <span class="keyword">if</span> strcmp(<span class="string">'2D'</span>, caseDimension)
+0033                 error(<span class="string">'selectivity:utilities:getFiberCoordinates'</span>, <span class="string">'Special space is only available for 1D case !'</span> );
+0034             <span class="keyword">end</span>
+0035         <span class="keyword">end</span>
+0036     <span class="keyword">else</span>
+0037         error(<span class="string">'wrong number of inputs'</span>);
+0038     <span class="keyword">end</span>
+0039     
+0040     
+0041     
+0042     <span class="comment">% not indetically spaced (usefull for optimization)</span>
+0043     <span class="comment">% Only for 1D case</span>
+0044     
+0045    
+0046     
+0047     
+0048     
+0049         
+0050     
+0051     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0052     <span class="comment">%% cas 1D</span>
+0053     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0054     
+0055     <span class="keyword">if</span> strcmp(<span class="string">'1D'</span>, caseDimension)
+0056         
+0057         <span class="keyword">if</span> ciblePosition == 0
+0058         
+0059             <span class="comment">%% probe to check how many points needed on the line to respect</span>
+0060             <span class="comment">% approximatively the number of points defined in 'nPoints1D'.</span>
+0061             sLine = linspace(0,1,30000);
+0062 
+0063             xLine = line1D(1,1)*ones(1,30000) + (line1D(2,1)-line1D(1,1))*sLine;
+0064             yLine = line1D(1,2)*ones(1,30000) + (line1D(2,2)-line1D(1,2))*sLine;
+0065 
+0066             <span class="comment">% To know if points of the line are inside fascile or not</span>
+0067             in = zeros(1,30000);
+0068 
+0069             <span class="comment">% Make some polygon for contour of fascicles</span>
+0070             <span class="comment">%contourFascicle =   cell(1,5);</span>
+0071             contourFascicle  = fasciclesGeometry.polyShape;
+0072             cont = zeros(100,2);
+0073             <span class="keyword">for</span> k=1:numel(contourFascicle)
+0074                 <span class="comment">%contourFascicle{k} = circle(fasciclesGeometry.centralPosition(:,k), fasciclesGeometry.diameterArray(k)/2, 100);</span>
+0075                 cont        = contourFascicle{k};<span class="comment">%squeeze(cell2mat(contourFascicle(1,k)));</span>
+0076                 xCont       = cont(1,:);
+0077                 yCont       = cont(2,:);
+0078 
+0079                 in = in + inpolygon(xLine, yLine, xCont ,yCont);
+0080             <span class="keyword">end</span>
+0081 
+0082             xLine = xLine(find(in));
+0083             yLine = yLine(find(in));
+0084 
+0085             nOfElementInside = length(xLine);
+0086             nOfTotalElement  = round((nPoints1D)*30000/nOfElementInside); <span class="comment">%MODIF !</span>
+0087 
+0088 
+0089             <span class="comment">%% final coordinates</span>
+0090             sLine = linspace(0,1,nOfTotalElement);
+0091             clear xLine yLine in
+0092 
+0093             xLine                   = line1D(1,1)*ones(1,nOfTotalElement) + (line1D(2,1)-line1D(1,1))*sLine;
+0094             yLine                   = line1D(1,2)*ones(1,nOfTotalElement) + (line1D(2,2)-line1D(1,2))*sLine;
+0095 
+0096 
+0097 
+0098 
+0099             <span class="comment">% To know if points of the line are inside fascile or not</span>
+0100             inFascicles             = zeros(numel(contourFascicle),nOfTotalElement);
+0101 
+0102 
+0103 
+0104             <span class="keyword">for</span> k=1:numel(contourFascicle)
+0105 
+0106                 cont                        = contourFascicle{k};<span class="comment">%squeeze(cell2mat(contourFascicle(1,k)));</span>
+0107                 xCont                       = cont(1,:);
+0108                 yCont                       = cont(2,:);
+0109 
+0110                 inFascicles(k,:)            = inpolygon(xLine, yLine, xCont ,yCont);
+0111             <span class="keyword">end</span>
+0112             in = inFascicles;
+0113 
+0114 
+0115 
+0116 
+0117 
+0118             <span class="comment">%</span>
+0119             lInternodal                 = 0;
+0120             <span class="keyword">if</span> fiberCase
+0121                 <span class="comment">% calcul de la longueur internodale à partie de fiberD</span>
+0122                 internodalLengthFiber       = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreD,1,20);        
+0123                 lInternodal                 = internodalLengthFiber.L;
+0124             <span class="keyword">else</span>
+0125                 lInternodal                 = zDistance;
+0126             <span class="keyword">end</span>
+0127 
+0128             <span class="comment">% nombre de noeuds sur la longueur de la fibre</span>
+0129             nNoeuds                     = floor((nerveL-lInternodal)/lInternodal)+1-2;
+0130             nFibreFascicle              = sum(inFascicles,2);
+0131 
+0132             numNoeuds       = [];
+0133             <span class="keyword">if</span> mod(nNoeuds,2)==1
+0134                 numNoeuds   = [ceil(-nNoeuds/2):1:floor(nNoeuds/2)];
+0135             <span class="keyword">else</span>
+0136                 numNoeuds   = [round(-nNoeuds/2):1:round(nNoeuds/2-1)];
+0137             <span class="keyword">end</span>
+0138 
+0139             <span class="comment">% final x and y vectors</span>
+0140             xLineInside     = xLine(find(in));
+0141             yLineInside     = yLine(find(in));
+0142             zLineInside     = [numNoeuds * lInternodal + shift*lInternodal*ones(1,nNoeuds)];
+0143 
+0144             xGrid           = xLineInside' * ones(1,nNoeuds);
+0145             yGrid           = yLineInside' * ones(1,nNoeuds);
+0146             zGrid           = ones(numel(xLineInside),1) * zLineInside;
+0147 
+0148             XYZFiberCoordinates = zeros(3, numel(xLineInside), numel(zLineInside));
+0149 
+0150             XYZFiberCoordinates(1,:,:) = xGrid;
+0151             XYZFiberCoordinates(2,:,:) = yGrid;
+0152             XYZFiberCoordinates(3,:,:) = zGrid;
+0153             
+0154         <span class="comment">%% progressive distribution to cible</span>
+0155         <span class="keyword">else</span>
+0156             <span class="keyword">if</span> mod(nPoints1D, 2) == 1 <span class="comment">% ça doit être pair</span>
+0157                 error(<span class="string">'nPoints1D must be a multiple of 2'</span>);
+0158             <span class="keyword">else</span>
+0159                 <span class="comment">%% initial and end point of the distribution</span>
+0160                 x0              = line1D(1,1);
+0161                 y0              = line1D(1,2);
+0162                 xf              = line1D(2,1)-50e-6;
+0163                 yf              = line1D(2,2);
+0164                 
+0165                 xLine           = zeros(1,nPoints1D);      
+0166                 yLine           = zeros(1,nPoints1D);
+0167                 
+0168                 xLine(1,1)      = x0;  
+0169                 xLine(1,end)    = xf;
+0170                 yLine(1,1)      = y0;
+0171                 yLine(1,end)    = yf;
+0172                 
+0173                 xCible          = x0 + (xf-x0)*ciblePosition;
+0174                 
+0175                 
+0176                 <span class="comment">%% computing distribution</span>
+0177                 <span class="keyword">for</span> i=2:nPoints1D/2
+0178                     <span class="comment">% convergence from x0 to cible</span>
+0179                     xLine(1,i)                 = (xLine(1,i-1)+xCible)/2;
+0180                     yLine(1,i)                 = y0;
+0181                     <span class="comment">% convergence from xf to cible</span>
+0182                     xLine(1,nPoints1D-i+1)     = (xLine(1,nPoints1D-i+2)+xCible)/2;
+0183                     yLine(1,nPoints1D-i+1)     = y0;
+0184                 <span class="keyword">end</span>
+0185                 
+0186                 <span class="comment">%% data arrays</span>
+0187                 
+0188                 
+0189                 
+0190                 lInternodal                 = 0;
+0191                 <span class="keyword">if</span> fiberCase
+0192                     <span class="comment">% calcul de la longueur internodale à partie de fiberD</span>
+0193                     internodalLengthFiber       = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreD,1,20);        
+0194                     lInternodal                 = internodalLengthFiber.L;
+0195                 <span class="keyword">else</span>
+0196                     lInternodal                 = zDistance;
+0197                 <span class="keyword">end</span>
+0198 
+0199                 <span class="comment">% nombre de noeuds sur la longueur de la fibre</span>
+0200                 <span class="keyword">if</span> fiberCase
+0201                     nNoeuds                     = floor((nerveL-lInternodal)/lInternodal)+1-2;
+0202                 <span class="keyword">else</span>
+0203                     nNoeuds                     = floor(1.1*cuffL/lInternodal);
+0204                 <span class="keyword">end</span>
+0205                 
+0206                 <span class="comment">% z coordinates</span>
+0207                 numNoeuds       = [];
+0208                 <span class="keyword">if</span> mod(nNoeuds,2)==1
+0209                     numNoeuds   = [ceil(-nNoeuds/2):1:floor(nNoeuds/2)];
+0210                 <span class="keyword">else</span>
+0211                     numNoeuds   = [round(-nNoeuds/2):1:round(nNoeuds/2-1)];
+0212                 <span class="keyword">end</span>
+0213                 
+0214                 zLine     = [numNoeuds * lInternodal + shift*lInternodal*ones(1,nNoeuds)];
+0215                 
+0216                 <span class="comment">% data</span>
+0217                 xGrid           = xLine' * ones(1,nNoeuds);
+0218                 yGrid           = yLine' * ones(1,nNoeuds);
+0219                 zGrid           = ones(numel(xLine),1) * zLine;
+0220 
+0221                 XYZFiberCoordinates = zeros(3, numel(xLine), numel(zLine));
+0222 
+0223                 XYZFiberCoordinates(1,:,:) = xGrid;
+0224                 XYZFiberCoordinates(2,:,:) = yGrid;
+0225                 XYZFiberCoordinates(3,:,:) = zGrid;
+0226             <span class="keyword">end</span>
+0227                 
+0228         <span class="keyword">end</span>
+0229         
+0230         
+0231 
+0232     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0233     <span class="comment">%% cas 2D</span>
+0234     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0235     
+0236     <span class="keyword">elseif</span> strcmp(<span class="string">'2D'</span>, caseDimension)
+0237 
+0238         
+0239         <span class="comment">% fascicle geomtrical properties</span>
+0240         
+0241 <span class="comment">%         XY0_F1              = fasciclesGeometry.centralPosition(:,1);</span>
+0242 <span class="comment">%         XY0_F2              = fasciclesGeometry.centralPosition(:,2);</span>
+0243 <span class="comment">%         XY0_F3              = fasciclesGeometry.centralPosition(:,3);</span>
+0244 <span class="comment">%         XY0_F4              = fasciclesGeometry.centralPosition(:,4);</span>
+0245 <span class="comment">%         XY0_F5              = fasciclesGeometry.centralPosition(:,5);</span>
+0246 <span class="comment">%</span>
+0247 <span class="comment">%         fascicleDArray      = fasciclesGeometry.diameterArray;</span>
+0248 <span class="comment">%</span>
+0249 
+0250         <span class="comment">% main properties of polygons defining contours of fasciles</span>
+0251         nFascicles  = fasciclesGeometry.numberOfFascicles;
+0252         minX        = zeros(1,nFascicles);
+0253         maxX        = zeros(1,nFascicles);
+0254         minY        = zeros(1,nFascicles);
+0255         maxY        = zeros(1,nFascicles);
+0256         polygonArea = zeros(1,nFascicles);
+0257         
+0258         <span class="keyword">for</span> k = 1:nFascicles
+0259             minX(k)         = min(fasciclesGeometry.polyShape{k}(1,:));
+0260             maxX(k)         = max(fasciclesGeometry.polyShape{k}(1,:));
+0261             minY(k)         = min(fasciclesGeometry.polyShape{k}(2,:));
+0262             maxY(k)         = max(fasciclesGeometry.polyShape{k}(2,:));
+0263             polygonArea(k)  = polyarea(fasciclesGeometry.polyShape{k}(1,:)', fasciclesGeometry.polyShape{k}(2,:)');
+0264         <span class="keyword">end</span>
+0265 
+0266         <span class="comment">%maillage</span>
+0267         LX = max(maxX) - min(minX);
+0268         LY = max(maxY) - min(minY);
+0269         
+0270         <span class="comment">% nombre de point dans le maillage englobant pour atteindre la</span>
+0271         <span class="comment">% densité requise</span>
+0272         nTot    = LX * LY * density2D;
+0273         
+0274         nY      = round(sqrt(nTot*LY/LX));
+0275         nX      = round(nTot/nY);
+0276         
+0277         pasX    = LX/nX;
+0278         pasY    = LY/nY;
+0279         
+0280         
+0281         <span class="comment">% xy vectors</span>
+0282         xGrid   = min(minX)+pasX/2:pasX:max(maxX)-pasX/2;
+0283         yGrid   = min(minY)+pasY/2:pasY:max(maxY)-pasY/2;
+0284         
+0285         <span class="comment">%z vector</span>
+0286         
+0287          <span class="comment">%</span>
+0288         lInternodal                 = 0;
+0289         <span class="keyword">if</span> fiberCase
+0290             <span class="comment">% calcul de la longueur internodale à partie de fiberD</span>
+0291             internodalLengthFiber       = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreD,1,20);        
+0292             lInternodal                 = internodalLengthFiber.L;
+0293         <span class="keyword">else</span>
+0294             lInternodal                 = zDistance;
+0295         <span class="keyword">end</span>
+0296         
+0297         <span class="comment">% nombre de noeuds sur la longueur de la fibre</span>
+0298         nNoeuds = floor((nerveL-lInternodal)/lInternodal)+1-2;
+0299         
+0300         <span class="comment">%traitement du cas pair et impair</span>
+0301         numNoeuds = [];
+0302         <span class="keyword">if</span> mod(nNoeuds,2)==1
+0303             numNoeuds = [ceil(-nNoeuds/2):1:floor(nNoeuds/2)];
+0304         <span class="keyword">else</span>
+0305             numNoeuds = [round(-nNoeuds/2):1:round(nNoeuds/2-1)];
+0306         <span class="keyword">end</span>
+0307         
+0308         
+0309         zGrid                   = numNoeuds * lInternodal + shift*lInternodal*ones(1,nNoeuds);
+0310         
+0311         
+0312         [xMesh, yMesh, zMesh]   = meshgrid(xGrid, yGrid, zGrid);
+0313         xMeshLine               = reshape(xMesh, [nX*nY, nNoeuds]);
+0314         yMeshLine               = reshape(yMesh, [nX*nY, nNoeuds]);
+0315         zMeshLine               = reshape(zMesh, [nX*nY, nNoeuds]);
+0316         
+0317         
+0318         
+0319         mask                    = zeros(size(squeeze(xMeshLine(:,1))));
+0320         <span class="keyword">for</span> k=1:nFascicles
+0321             mask                = mask + inpolygon(squeeze(xMeshLine(:,1)),squeeze(yMeshLine(:,1)),fasciclesGeometry.polyShape{k}(1,:)', fasciclesGeometry.polyShape{k}(2,:)');
+0322         <span class="keyword">end</span>
+0323         
+0324         
+0325 
+0326         <span class="comment">%calcul de la longueur internodale à partie de fiberD</span>
+0327         
+0328         indicesFasciles             = find(mask);
+0329         XYZFiberCoordinates         = zeros(3,sum(mask), numel(zGrid));
+0330         XYZFiberCoordinates(1,:,:)  = xMeshLine(indicesFasciles, :);
+0331         XYZFiberCoordinates(2,:,:)  = yMeshLine(indicesFasciles, :);
+0332         XYZFiberCoordinates(3,:,:)  = zMeshLine(indicesFasciles, :);
+0333         
+0334      
+0335 
+0336     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0337     <span class="comment">%% cas 0D</span>
+0338     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0339     
+0340 
+0341     <span class="keyword">elseif</span> strcmp(<span class="string">'0D'</span>, caseDimension)
+0342         
+0343            
+0344         <span class="comment">% length between nodes</span>
+0345         internodalLengthFiber = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreD,1,20);
+0346         lInternodal = internodalLengthFiber.L;
+0347         
+0348         <span class="comment">% nombre de noeuds sur la longueur de la fibre</span>
+0349         nNoeuds = floor((nerveL-lInternodal)/lInternodal)+1-2;
+0350         
+0351         <span class="comment">%traitement du cas pair et impair</span>
+0352         numNoeuds = [];
+0353         <span class="keyword">if</span> mod(nNoeuds,2)==1
+0354             numNoeuds = [ceil(-nNoeuds/2):1:floor(nNoeuds/2)];
+0355         <span class="keyword">else</span>
+0356             numNoeuds = [round(-nNoeuds/2):1:round(nNoeuds/2-1)];
+0357         <span class="keyword">end</span>
+0358         
+0359         
+0360         zGrid                   = numNoeuds * lInternodal + shift*lInternodal*ones(1,nNoeuds);
+0361         
+0362         positionFiber0D
+0363         XYZFiberCoordinates = zeros(3, 1, numel(zGrid));
+0364         
+0365         XYZFiberCoordinates(1,1,:)  = positionFiber0D(1)*ones(size(zGrid));
+0366         XYZFiberCoordinates(2,1,:)  = positionFiber0D(2)*ones(size(zGrid));
+0367         XYZFiberCoordinates(3,1,:)  = zGrid;
+0368         
+0369 
+0370     <span class="comment">% error msg</span>
+0371     <span class="keyword">else</span>
+0372         error(<span class="string">'selectivity:utilities:getFiberCoordinates:inputParameters'</span>,<span class="string">'Wrong number of parameters (1 for 1D, 3 for 2D)'</span>);
+0373     <span class="keyword">end</span>
+0374     <span class="keyword">if</span> strcmp(<span class="string">'2D'</span>, caseDimension)
+0375         display([<span class="string">'There is '</span> num2str(numel(XYZFiberCoordinates(1,:,1))) <span class="string">' fibers generated with a density of '</span> num2str(density2D/1e6) <span class="string">' [fibres/mm²].'</span>])
+0376     <span class="keyword">elseif</span> strcmp(<span class="string">'1D'</span>, caseDimension)
+0377         display([<span class="string">'There is '</span> num2str(numel(XYZFiberCoordinates(1,:,1))) <span class="string">' fibers generated (1D case).'</span>])
+0378     <span class="keyword">else</span>
+0379         display([<span class="string">'There is '</span> num2str(numel(XYZFiberCoordinates(1,:,1))) <span class="string">' fibers generated (0D case).'</span>])
+0380     <span class="keyword">end</span>
+0381 
+0382 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

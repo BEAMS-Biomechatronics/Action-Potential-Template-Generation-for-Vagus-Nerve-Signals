@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getActivatingFunction</title>
+  <meta name="keywords" content="getActivatingFunction">
+  <meta name="description" content="getActivatingFunction">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>getActivatingFunction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>getActivatingFunction</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function Vzz = getActivatingFunction(Ve) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">getActivatingFunction 
+   Send just the voltage for the different nodes of one fiber, and the
+   activating function is sent back.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getActivatingFunctionFromCoordinates.html" class="code" title="function [z, Vzz, Ve] = getActivatingFunctionFromCoordinates(model, fiberD, XY)">getActivatingFunctionFromCoordinates</a>	[z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)</li><li><a href="../../+selectivity/+optimAnode/plotMaxAFFunctionOfCuffL.html" class="code" title="function plotMaxAFFunctionOfCuffL()">plotMaxAFFunctionOfCuffL</a>	PLOTMAXAFFUNCTIONOFCUFFL</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Vzz = getActivatingFunction(Ve)</a>
+0002 <span class="comment">%getActivatingFunction</span>
+0003 <span class="comment">%   Send just the voltage for the different nodes of one fiber, and the</span>
+0004 <span class="comment">%   activating function is sent back.</span>
+0005 
+0006     <span class="keyword">if</span> ~isvector(Ve)
+0007         error(<span class="string">'selectivity:utilities:getActivatingFunction'</span>, <span class="string">'You must enter a vector corresponding to the external voltage nodes'</span>);
+0008     <span class="keyword">end</span>
+0009 
+0010     Ve1 = Ve(1:end-2);
+0011     Ve2 = Ve(2:end-1);
+0012     Ve3 = Ve(3:end);
+0013 
+0014     Vzz = Ve3+Ve1-2*Ve2;
+0015 
+0016 
+0017 
+0018 
+0019 <span class="keyword">end</span>
+0020</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

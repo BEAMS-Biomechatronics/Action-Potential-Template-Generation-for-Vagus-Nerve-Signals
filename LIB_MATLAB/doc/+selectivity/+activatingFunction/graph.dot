@@ -1,0 +1,11 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  getActivatingFunctionFromCoordinates -> getActivatingFunction;
+
+  AFvsCompleteModelvsPassiveModel [URL="AFvsCompleteModelvsPassiveModel.html"];
+  getActivatingFunction [URL="getActivatingFunction.html"];
+  getActivatingFunctionFromCoordinates [URL="getActivatingFunctionFromCoordinates.html"];
+  map2dDiscrete [URL="map2dDiscrete.html"];
+  plotRheobase [URL="plotRheobase.html"];
+  rheobase [URL="rheobase.html"];
+}

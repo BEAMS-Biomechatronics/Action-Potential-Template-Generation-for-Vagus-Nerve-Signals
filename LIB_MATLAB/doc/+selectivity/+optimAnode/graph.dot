@@ -1,0 +1,8 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  optimizeAlpha -> virtualCathodeCostFunction;
+
+  optimizeAlpha [URL="optimizeAlpha.html"];
+  plotMaxAFFunctionOfCuffL [URL="plotMaxAFFunctionOfCuffL.html"];
+  virtualCathodeCostFunction [URL="virtualCathodeCostFunction.html"];
+}

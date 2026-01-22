@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mapActivationWithShiftFourColors</title>
+  <meta name="keywords" content="mapActivationWithShiftFourColors">
+  <meta name="description" content="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +anodalBlock -->
+<h1>mapActivationWithShiftFourColors
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mapActivationWithShiftFourColors(resultFile) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ TO UPDATE !!!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mapActivationWithShiftFourColors(resultFile)</a>
+0002     
+0003 
+0004 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0005 <span class="comment">% TO UPDATE !!!!</span>
+0006 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0007 
+0008     <span class="comment">%chargement de tous les paramètres :</span>
+0009     load(resultFile);      
+0010     
+0011     
+0012     fibreTest = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(diametreFibre(1),1,[0],20, 0, 0);
+0013     X = [];
+0014     Y = [];
+0015     
+0016     nFasicule = length(CoordonneesFibresXY(:,1))/2;
+0017     nFibreParFasicule = length(CoordonneesFibresXY(1,:));
+0018     XY0 = [];
+0019     <span class="keyword">for</span> i=1:nFasicule
+0020         <span class="keyword">for</span> k=1:nFibreParFasicule
+0021             X = [X CoordonneesFibresXY((i-1)*2+1,k)];
+0022             Y = [Y CoordonneesFibresXY(i*2,k)];
+0023             <span class="keyword">if</span> k==1
+0024                 XY0 = [XY0 [CoordonneesFibresXY((i-1)*2+1,k);CoordonneesFibresXY(i*2,k)]];
+0025             <span class="keyword">end</span>
+0026         <span class="keyword">end</span>
+0027     <span class="keyword">end</span>
+0028     [xq, yq] = meshgrid(-3e-3/2:0.01e-3:3e-3/2);
+0029     
+0030     <span class="comment">%données d'interpolation</span>
+0031    typeq = griddata(X,Y,type,xq,yq);
+0032   
+0033    
+0034    <span class="comment">%sélection de l'intérieur des fascicules</span>
+0035    theta = linspace(0,2*pi,200);
+0036    
+0037    xFascicle1 = XY0(1,1)*ones(1,200)    +fasciculeD/2*cos(theta);
+0038    yFascicle1 = XY0(2,1)*ones(1,200)    +fasciculeD/2*sin(theta);
+0039    xFascicle2 = XY0(1,2)*ones(1,200)    +fasciculeD/2*cos(theta);
+0040    yFascicle2 = XY0(2,2)*ones(1,200)    +fasciculeD/2*sin(theta);
+0041    xFascicle3 = XY0(1,3)*ones(1,200)    +fasciculeD/2*cos(theta);
+0042    yFascicle3 = XY0(2,3)*ones(1,200)    +fasciculeD/2*sin(theta);
+0043    xFascicle4 = XY0(1,4)*ones(1,200)    +fasciculeD/2*cos(theta);
+0044    yFascicle4 = XY0(2,4)*ones(1,200)    +fasciculeD/2*sin(theta);
+0045    xFascicle5 = XY0(1,5)*ones(1,200)    +fasciculeD/2*cos(theta);
+0046    yFascicle5 = XY0(2,5)*ones(1,200)    +fasciculeD/2*sin(theta);
+0047    xNerve     = XY0(1,1)*ones(1,200)    +nerveD/2*cos(theta);
+0048    yNerve     = XY0(2,1)*ones(1,200)    +nerveD/2*sin(theta);
+0049    xRing1     = XY0(1,1)*ones(1,200)    +ring1D/2*cos(theta);
+0050    yRing1     = XY0(2,1)*ones(1,200)    +ring1D/2*sin(theta);
+0051    xRing2     = XY0(1,1)*ones(1,200)    +ring2D/2*cos(theta);
+0052    yRing2     = XY0(2,1)*ones(1,200)    +ring2D/2*sin(theta);  
+0053    
+0054    inFascicle1 = inpolygon(xq,yq,xFascicle1,yFascicle1)*1;
+0055    inFascicle2 = inpolygon(xq,yq,xFascicle2,yFascicle2)*1;
+0056    inFascicle3 = inpolygon(xq,yq,xFascicle3,yFascicle3);
+0057    inFascicle4 = inpolygon(xq,yq,xFascicle4,yFascicle4);
+0058    inFascicle5 = inpolygon(xq,yq,xFascicle5,yFascicle5);
+0059    
+0060    <span class="comment">%masque = 1 dans les facicules, masque = 0 en dehors.</span>
+0061    masque = inFascicle1*1+inFascicle2*1+inFascicle3*1+inFascicle4*1+inFascicle5*1;
+0062    
+0063    <span class="comment">%utilisation du masque sur typeq</span>
+0064    <span class="comment">%On donne une valeur Nan en dehors des fascicules de telle sorte que</span>
+0065    <span class="comment">%les valeur en dehors ne seront pas affichées lors de l'appel de la</span>
+0066    <span class="comment">%fonction surf.</span>
+0067    typeq = (masque==1)*1.*typeq+(masque==0)*0;
+0068    typeq(typeq==0) = nan;
+0069    
+0070    
+0071       
+0072    <span class="comment">%plot sans les mesh</span>
+0073    figure()
+0074    surf(xq,yq,typeq,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>);
+0075    
+0076    <span class="comment">%color map</span>
+0077    colormap23 = [ones(16,1)*[1 0 0];ones(32,1)*[0 1 0];ones(32,1)*[0 0 0];ones(16,1)*[0 0 1]];   <span class="comment">%noir et rouge</span>
+0078    colormap(colormap23);                        <span class="comment">%attribution de la map de couleur</span>
+0079    
+0080    
+0081    <span class="comment">%dessin des fascicules, du nerf, et des électrodes.</span>
+0082    zFascicle=zeros(1,length(theta));
+0083    
+0084    hold on;
+0085    plot3(xFascicle1,yFascicle1,zFascicle, <span class="string">'k'</span>);
+0086    plot3(xFascicle2,yFascicle2,zFascicle, <span class="string">'k'</span>);
+0087    plot3(xFascicle3,yFascicle3,zFascicle, <span class="string">'k'</span>);
+0088    plot3(xFascicle4,yFascicle4,zFascicle, <span class="string">'k'</span>);
+0089    plot3(xFascicle5,yFascicle5,zFascicle, <span class="string">'k'</span>);
+0090    hNerve = plot3(xNerve,yNerve,zFascicle,<span class="string">'k'</span>, <span class="string">'LineWidth'</span>,1);
+0091    hRing1 = plot3(xRing1,yRing1,zFascicle,<span class="string">'r+'</span>, <span class="string">'LineWidth'</span>,1.5);
+0092    hRing2 = plot3(xRing2,yRing2,zFascicle,<span class="string">'b--'</span>, <span class="string">'LineWidth'</span>,1.5);
+0093    
+0094    <span class="comment">%légende des tracés</span>
+0095    legend([hNerve hRing1 hRing2], {<span class="string">'Nerve and Fasciles Contour'</span>,<span class="string">'Ring Anode contour (+)'</span>, <span class="string">'Ring Cathode contour (-)'</span>}, <span class="string">'Location'</span>, <span class="string">'south'</span>);
+0096    
+0097   
+0098    
+0099    <span class="comment">%point de vue du dessus</span>
+0100    caxis([1 4])
+0101     axis equal
+0102     az = 0;
+0103     el = 90;
+0104     view(az, el);
+0105     
+0106    <span class="comment">%Illustration des diffénts types détectés.</span>
+0107    hcb = colorbar(<span class="string">'YTick'</span>,[1 2 3 4] ,<span class="string">'YTickLabel'</span>,{<span class="string">'No AP at all'</span>, <span class="string">'AP Cathode'</span>, <span class="string">'No AP (anodic block)'</span>, <span class="string">'AP (virutal cathode)'</span>})
+0108    set(hcb, <span class="string">'YTickMode'</span>, <span class="string">'manual'</span>)
+0109    title(<span class="string">'Déclenchement des potentiels d action dans le nerf et classement par type'</span>);
+0110    
+0111    stringParameters = sprintf(<span class="string">'Diam. fibre : %0.1f µm\nDiam. cathode : %0.3f mm \nDiam. anode : %0.3f mm \nDiam. fascicle : %0.3f mm \nDiam. nerf : %0.3f mm \n|e|electode : %0.3f mm \nCurrent : %0.3f mA \nPulse Time : %0.2f ms \nExt. cond. (inside cuff) : %0.2f S/m'</span>, diametreFibre(1)*1e6, ring2D*1e3, ring1D*1e3, fasciculeD*1e3, nerveD*1e3, ringD*1e3, courant_relatif*1e3, pulseTEnd*1e3, sigmaEXT)
+0112    annotation(gcf,<span class="string">'textbox'</span>, [0.1 0.4 0.15 0.15], <span class="string">'String'</span>,stringParameters, <span class="string">'FitBoxToText'</span>,<span class="string">'off'</span>, <span class="string">'BackgroundColor'</span>,[1 1 1]);
+0113    set(gcf,<span class="string">'Renderer'</span>,<span class="string">'OpenGL'</span>)
+0114     
+0115    
+0116 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

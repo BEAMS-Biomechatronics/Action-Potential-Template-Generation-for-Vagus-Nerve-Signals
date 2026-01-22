@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of AFvsCompleteModelvsPassiveModel</title>
+  <meta name="keywords" content="AFvsCompleteModelvsPassiveModel">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>AFvsCompleteModelvsPassiveModel
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [simFibre1, simFibre2] = AFvsCompleteModelvsPassiveModel() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>	getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [simFibre1, simFibre2] = AFvsCompleteModelvsPassiveModel() </a>
+0002     import selectivity.comsol.*
+0003     import selectivity.utilities.*
+0004 
+0005     <span class="comment">% Load model parameters</span>
+0006     selectivity.comsol.parametersParaboleAnode();
+0007     load parameters;
+0008 
+0009     fibreDSeuil     = 5e-6;                     <span class="comment">% taille de fibre à exploiter pour le courant seuil.</span>
+0010     save(<span class="string">'parameters.mat'</span>, <span class="string">'fibreDSeuil'</span>, <span class="string">'-append'</span>);
+0011    
+0012     
+0013     <span class="comment">% coordinates</span>
+0014     XYZ             = selectivity.utilities.getFiberCoordinates(5e-6, 4, 1, nerveL, 1.95e-3, 400e-6);
+0015     
+0016     <span class="comment">% sim fibre one</span>
+0017     position1       = [0 0];
+0018     position2       = [0 nerveD/4 + fascicleD/2 - 1e-6];
+0019     
+0020     courant1        = selectivity.fibreModel.fibre.findCurrent(5e-6, position1, comsolModel, <span class="string">'12'</span>);
+0021     courant2        = selectivity.fibreModel.fibre.findCurrent(5e-6, position2, comsolModel, <span class="string">'12'</span>);
+0022     
+0023     modelFEM        = comsolModel();
+0024     Ve              = <a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>(modelFEM, XYZ);
+0025     
+0026     Ve1             = squeeze(Ve(1,ceil(end/2), :));
+0027     Ve2             = squeeze(Ve(2,<span class="keyword">end</span>, :));
+0028     
+0029     <span class="comment">% simultation one fibre</span>
+0030     simFibre1       = selectivity.anodalBlock.simOneFiber(5e-6, WF, courant1, position1, 1);
+0031     simFibre2       = selectivity.anodalBlock.simOneFiber(5e-6, WF, courant2, position2, 1);
+0032     
+0033     <span class="comment">%</span>
+0034     simFibre1.solve(Ve1');
+0035     simFibre2.solve(Ve2');
+0036     
+0037     
+0038     
+0039     
+0040 
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of traceAP1D</title>
+  <meta name="keywords" content="traceAP1D">
+  <meta name="description" content="mapActivationWithShiftTwoColors(resultDirectory)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +anodalBlock -->
+<h1>traceAP1D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>mapActivationWithShiftTwoColors(resultDirectory)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function traceAP1D(resultDirectory) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> mapActivationWithShiftTwoColors(resultDirectory)
+ This function can be called after you have solved the problem with
+ the detectActivationWithShift('1D') function. 
+ You should run it at the root directory of the result.
+ The input parameter contains the string which correspond to the
+ result folder name which you want to plot.
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ Structure of the result folder is the following :
+
+ -*geometry_parameters_result_folder
+   -&gt;parameters.mat    € (geometricalParameters)
+   -*fibreD[fibreD]
+       -*figure
+           -*shift_[shiftX1]
+               -&gt;figure_fibreD_[fibreD]_fibreNum_[numFibre].fig
+               -&gt; ...
+           -* ...
+       -&gt;shift_[shift]_mat.mat     € (Vm, t ,type)
+       -&gt; ...
+  
+ % (the variables included in the name of files (-&gt;) and folders (-*) 
+ are written between brackets []) 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+utilities/histoFibreDiameter.html" class="code" title="">histoFibreDiameter</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function traceAP1D(resultDirectory)</a>
+0002 <span class="comment">% mapActivationWithShiftTwoColors(resultDirectory)</span>
+0003     <span class="comment">% This function can be called after you have solved the problem with</span>
+0004     <span class="comment">% the detectActivationWithShift('1D') function.</span>
+0005     <span class="comment">% You should run it at the root directory of the result.</span>
+0006     <span class="comment">% The input parameter contains the string which correspond to the</span>
+0007     <span class="comment">% result folder name which you want to plot.</span>
+0008     <span class="comment">% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0009     <span class="comment">%</span>
+0010     <span class="comment">% Structure of the result folder is the following :</span>
+0011     <span class="comment">%</span>
+0012     <span class="comment">% -*geometry_parameters_result_folder</span>
+0013     <span class="comment">%   -&gt;parameters.mat    € (geometricalParameters)</span>
+0014     <span class="comment">%   -*fibreD[fibreD]</span>
+0015     <span class="comment">%       -*figure</span>
+0016     <span class="comment">%           -*shift_[shiftX1]</span>
+0017     <span class="comment">%               -&gt;figure_fibreD_[fibreD]_fibreNum_[numFibre].fig</span>
+0018     <span class="comment">%               -&gt; ...</span>
+0019     <span class="comment">%           -* ...</span>
+0020     <span class="comment">%       -&gt;shift_[shift]_mat.mat     € (Vm, t ,type)</span>
+0021     <span class="comment">%       -&gt; ...</span>
+0022     <span class="comment">%</span>
+0023     <span class="comment">% % (the variables included in the name of files (-&gt;) and folders (-*)</span>
+0024     <span class="comment">% are written between brackets [])</span>
+0025     <span class="comment">% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0026     
+0027     import selectivity.utilities.*
+0028     
+0029     warning(<span class="string">'off'</span>,<span class="string">'signal:findpeaks:largeMinPeakHeight'</span>);
+0030     
+0031     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0032     <span class="comment">%%          PARAMETERS                                    %%</span>
+0033     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0034     
+0035     <span class="comment">% Loading important facts</span>
+0036     <span class="comment">% - nNodeShift</span>
+0037     <span class="comment">% - nFibreLayerPerFasicle</span>
+0038     <span class="comment">% - nFibreFirstLayer</span>
+0039     
+0040     newresultDirectory = resultDirectory;
+0041     load([resultDirectory <span class="string">'/parameters.mat'</span>]);
+0042     resultDirectory = newresultDirectory;
+0043    
+0044    
+0045     <span class="comment">% number of fibre diameter studied</span>
+0046     contentResultDirectory      = dir(resultDirectory);
+0047     all_dir = contentResultDirectory([contentResultDirectory(:).isdir]);
+0048     nDiameter = numel(all_dir)-2;
+0049     
+0050     
+0051     diameterArray               = zeros(1,nDiameter);
+0052     rangeOfDiameterValidity     = zeros(2,nDiameter);
+0053    
+0054     <span class="comment">% retrieve diameters data</span>
+0055     timeSave                    = [];
+0056     minTime = 1e20;
+0057     <span class="keyword">for</span> k = 3:nDiameter+2
+0058         folderName              = contentResultDirectory(k).name;
+0059         diameterArray(k-2)      = str2double(folderName(7:end));
+0060         <span class="comment">% proportion of AP for a fixed diameter</span>
+0061         load([<span class="string">'./'</span> resultDirectory <span class="string">'/'</span> contentResultDirectory(k).name <span class="string">'/shift_0_mat.mat'</span>], <span class="string">'time'</span>);
+0062         currentMaxTime          = numel(time{1});
+0063         <span class="keyword">if</span> currentMaxTime &lt; minTime
+0064             minTime             = currentMaxTime;
+0065             timeSave            = time{1};
+0066         <span class="keyword">end</span>
+0067     <span class="keyword">end</span>
+0068     
+0069     <span class="comment">% get Proportion of fibers for each fiber diameter</span>
+0070     hFD                         = <a href="../../+selectivity/+utilities/histoFibreDiameter.html" class="code" title="">histoFibreDiameter</a>();
+0071     nRange                      = hFD.getProportion(diameterArray);
+0072     
+0073     
+0074     <span class="comment">% load first result to extract coordinates (coordinates are common to</span>
+0075     <span class="comment">% all the results :</span>
+0076     <span class="comment">% - CoordonneesFibresXYZ</span>
+0077     <span class="comment">% - time</span>
+0078     type = [];    
+0079     load([<span class="string">'./'</span> resultDirectory <span class="string">'/'</span> contentResultDirectory(3).name <span class="string">'/shift_0_mat.mat'</span>]);
+0080     
+0081     <span class="comment">%size of CoordonneesFibresXYZ</span>
+0082     sizeXYZ             = size(CoordonneesFibresXYZ);
+0083     nFibre              = sizeXYZ(2);
+0084     nNoeuds             = sizeXYZ(3);
+0085     nFascicle           = fasciclesGeometry.numberOfFascicles;
+0086     nTime               = minTime;   
+0087     
+0088     
+0089     partOfAPTotal       = [];
+0090     colorsChange        = {<span class="string">'-r'</span>, <span class="string">'.g'</span>, <span class="string">'-.b'</span>};
+0091     
+0092     
+0093     lInterNodal         = cell(nDiameter);
+0094     XYZCell             = cell(nDiameter, nNodeShift);
+0095     indiceVmPeaks       = cell(nDiameter, nNodeShift, nFibre, nTime);
+0096     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0097     <span class="comment">%%          LOOPS                                               %%</span>
+0098     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0099     <span class="comment">% loop for the different size of fiber</span>
+0100     <span class="keyword">for</span> k = 1:nDiameter
+0101         
+0102         <span class="comment">% Need the coordinates in XY of fibers and the central fibers</span>
+0103         <span class="comment">% coordinates</span>
+0104         X       = reshape([squeeze(CoordonneesFibresXYZ(1,:,1))]', nFibre, 1);
+0105         Y       = reshape([squeeze(CoordonneesFibresXYZ(2,:,1))]', nFibre, 1);
+0106         Z       = squeeze(CoordonneesFibresXYZ(3,:,1)); <span class="comment">% z coordinates for first node</span>
+0107         rXY     = sqrt(X.^2+Y.^2);
+0108         <span class="comment">%XY0     = [X(1:nFibrePerFasicle:end); Y(1:nFibrePerFasicle:end)];</span>
+0109 
+0110         
+0111         <span class="comment">% proportion of AP for a fixed diameter</span>
+0112         load([<span class="string">'./'</span> resultDirectory <span class="string">'/'</span> contentResultDirectory(k+2).name <span class="string">'/shift_0_mat.mat'</span>], <span class="string">'type'</span>, <span class="string">'Vm'</span>);
+0113  
+0114         
+0115         lInterNodal{k}              = fibreSave{1}.L;
+0116         
+0117         <span class="keyword">for</span> l=1:nNodeShift
+0118             <span class="comment">% shift value (as used in detectActivationWithShift)</span>
+0119             shift                           = (l-1)/nNodeShift;
+0120             <span class="comment">% data file name (as used in detectActivationWithShift)</span>
+0121             currentFileName                 = [<span class="string">'shift_'</span> num2str(shift) <span class="string">'.mat'</span>];
+0122             currentFileName                 = strrep(currentFileName, <span class="string">'.'</span>, <span class="string">'_'</span>);
+0123             <span class="comment">% Load currrent data to retrieve 'type results'</span>
+0124             load([<span class="string">'./'</span> resultDirectory <span class="string">'/'</span> contentResultDirectory(2+k).name <span class="string">'/'</span> currentFileName], <span class="string">'Vm'</span>, <span class="string">'CoordonneesFibresXYZ'</span>, <span class="string">'fibreSave'</span>);
+0125             
+0126             
+0127             XYZCell{k,l}                    = CoordonneesFibresXYZ; 
+0128             <span class="keyword">for</span> m = 1:numel(Vm)
+0129                 
+0130                 display(sprintf(<span class="string">'k : %d,l : %d, m:%d'</span>,k,l,m));
+0131                 <span class="keyword">for</span> tI=1:nTime
+0132                     
+0133                     <span class="keyword">if</span> ~isempty(Vm{m})
+0134                         [~, location]               = findpeaks(Vm{m}(tI,:),<span class="string">'MinPeakHeight'</span>, 0.045);
+0135                         indiceVmPeaks{k,l,m,tI}     = location;
+0136                     <span class="keyword">else</span>
+0137                         indiceVmPeaks{k,l,m,tI}     = [];
+0138                     <span class="keyword">end</span>
+0139                 <span class="keyword">end</span>
+0140             <span class="keyword">end</span>
+0141         <span class="keyword">end</span>
+0142     <span class="keyword">end</span>
+0143     
+0144     save(<span class="string">'trace.mat'</span>, <span class="string">'XYZCell'</span>,  <span class="string">'indiceVmPeaks'</span>, <span class="string">'nDiameter'</span>, <span class="string">'nTime'</span>,<span class="string">'nNodeShift'</span>, <span class="string">'nFibre'</span>);
+0145     load trace;
+0146     
+0147     filename=sprintf(<span class="string">'movieVmFiberNbr_%d.mp4'</span>,1);
+0148     v = VideoWriter(filename, <span class="string">'MPEG-4'</span>);
+0149     open(v);
+0150     epsZ = abs(XYZCell{1,1}(1,1,1)-XYZCell{1,1}(1,2,1))/nFibre/2;
+0151     
+0152     fig = figure(<span class="string">'OuterPosition'</span>, [500 0 1280 800]);
+0153     
+0154     colorPlot           = {<span class="string">'sb'</span>, <span class="string">'xr'</span>, <span class="string">'dg'</span>, <span class="string">'pk'</span>, <span class="string">'&gt;c'</span>, <span class="string">'+y'</span>, <span class="string">'*b'</span>, <span class="string">'^r'</span>, <span class="string">'vg'</span>, <span class="string">'&gt;k'</span>, <span class="string">'&lt;c'</span>, <span class="string">'oy'</span>}; 
+0155 
+0156     <span class="keyword">for</span> k=1:nTime
+0157        clf;
+0158        hold on;
+0159        subplot(3,1,[1 ,2])
+0160        <span class="keyword">for</span> l=1:nDiameter
+0161            <span class="keyword">for</span> m=1:nNodeShift
+0162                <span class="keyword">for</span> n=1:nFibre
+0163                    <span class="comment">%display(sprintf('time : %d,diam : %d, shift:%d, nFibre:%d',k,l,m,n));</span>
+0164                    <span class="keyword">if</span> ~isempty(indiceVmPeaks{l,m,n,k})
+0165                         plot(squeeze(XYZCell{l,m}(3,n,[indiceVmPeaks{l,m,n,k}])),l*epsZ*ones(size(squeeze(XYZCell{l,m}(1,n,[indiceVmPeaks{l,m,n,k}]))))+squeeze(XYZCell{l,m}(1,n,[indiceVmPeaks{l,m,n,k}])), colorPlot{mod(l,12)+1});<span class="comment">%</span>
+0166                         hold on;
+0167                    <span class="keyword">end</span>
+0168                <span class="keyword">end</span>
+0169            <span class="keyword">end</span>
+0170        <span class="keyword">end</span>
+0171        yIntervalle = [line1D(1,1) line1D(2,1)];
+0172        axis([-nerveL/2 nerveL/2 min(yIntervalle) max(yIntervalle)]);
+0173        
+0174        <span class="comment">%plot WF</span>
+0175        subplot(3,1,3), plot(timeSave*1e3, WF1.WF(timeSave)*current1*1e3);
+0176        xlabel(<span class="string">'temps [ms]'</span>);
+0177        ylabel(<span class="string">'courrant [mA]'</span>);
+0178        maxWF1           = max(WF1.WF(timeSave));
+0179        minWF1           = min(WF1.WF(timeSave));
+0180        hold on, plot([timeSave(k) timeSave(k)]*1e3,  [minWF1 maxWF1]*1e3*current1);
+0181        title(sprintf(<span class="string">'Time : %d µs'</span>,round(timeSave(k)*1e6)));
+0182        
+0183        F = getframe(gcf);<span class="comment">%rect</span>
+0184        writeVideo(v,F)
+0185        hold off
+0186     <span class="keyword">end</span>
+0187     close(v);
+0188 <span class="keyword">end</span>
+0189</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

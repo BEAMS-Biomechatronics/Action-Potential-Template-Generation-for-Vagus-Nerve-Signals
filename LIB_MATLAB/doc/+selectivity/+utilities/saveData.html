@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveData</title>
+  <meta name="keywords" content="saveData">
+  <meta name="description" content="saveData transfert all the files of the current directory in a new directory">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +utilities -->
+<h1>saveData
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>saveData transfert all the files of the current directory in a new directory</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function saveData(folderLevel1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> saveData transfert all the files of the current directory in a new directory 
+ with subDirectoryName.
+ some parameters define the folderNames, so first load them.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+anodalBlock/detectActivationWithShift.html" class="code" title="function [varargout] = detectActivationWithShift(varargin)">detectActivationWithShift</a>	detectActivationWithShift(varargin)</li><li><a href="../../+selectivity/+anodalBlock/detectTransition.html" class="code" title="function [varargout] = detectTransition()">detectTransition</a>	detectTransition()</li><li><a href="../../+selectivity/+optimAnode/plotMaxAFFunctionOfCuffL.html" class="code" title="function plotMaxAFFunctionOfCuffL()">plotMaxAFFunctionOfCuffL</a>	PLOTMAXAFFUNCTIONOFCUFFL</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function saveData(folderLevel1)</a>
+0002 <span class="comment">% saveData transfert all the files of the current directory in a new directory</span>
+0003 <span class="comment">% with subDirectoryName.</span>
+0004     <span class="comment">% some parameters define the folderNames, so first load them.</span>
+0005     load parameters
+0006     
+0007     <span class="comment">%folderLevel 1 is about the geometry</span>
+0008 <span class="comment">%    folderLevel1 = geometryName;</span>
+0009 <span class="comment">%     for m = 1:length(listMainProperties)</span>
+0010 <span class="comment">%         folderLevel1 = [folderLevel1 '_' listMainProperties{m} '_' num2str(eval(listMainProperties{m})) '_'];</span>
+0011 <span class="comment">%     end</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%     folderLevel1 = strrep(folderLevel1, '.', '_');</span>
+0014 <span class="comment">%     folderLevel1 = strrep(folderLevel1, '-', '_');</span>
+0015     
+0016     
+0017     <span class="comment">%folderLevel2 are splitted depending on the fiber diameter</span>
+0018     folderLevel2 = [<span class="string">'fibreD'</span> num2str(fibreD)];
+0019     <span class="comment">%folderLevel2 = strrep(folderLevel2, '.', '_');</span>
+0020     
+0021     <span class="comment">%folderLevel3 has just one subfolder for figures.</span>
+0022     folderLevel3 = <span class="string">'figure'</span>;
+0023     
+0024     <span class="comment">%folderLevel4 has a subfolder for each shift.</span>
+0025     folderLevel4 = [<span class="string">'shift_'</span> num2str(shift)];
+0026     folderLevel4 = strrep(folderLevel4, <span class="string">'.'</span>, <span class="string">'_'</span>);
+0027     
+0028     <span class="comment">% create Sthe directories</span>
+0029     mkdir(folderLevel1);
+0030     mkdir([<span class="string">'./'</span> folderLevel1], folderLevel2);
+0031     mkdir([<span class="string">'./'</span> folderLevel1 <span class="string">'/'</span> folderLevel2], folderLevel3);
+0032     mkdir([<span class="string">'./'</span> folderLevel1 <span class="string">'/'</span> folderLevel2 <span class="string">'/'</span> folderLevel3], folderLevel4);
+0033     
+0034     
+0035     <span class="comment">%retrieving file names</span>
+0036     currentFolderContent = dir;
+0037     figureFolderContent  = dir(<span class="string">'./figure/'</span>);
+0038         
+0039   
+0040     
+0041     <span class="comment">% direct Access folder path</span>
+0042     folderLevel1DA = [folderLevel1 <span class="string">'/'</span>];
+0043     folderLevel2DA = [folderLevel1 <span class="string">'/'</span> folderLevel2 <span class="string">'/'</span>];
+0044     folderLevel3DA = [folderLevel1 <span class="string">'/'</span> folderLevel2 <span class="string">'/'</span> folderLevel3 <span class="string">'/'</span>];
+0045     folderLevel4DA = [folderLevel1 <span class="string">'/'</span> folderLevel2 <span class="string">'/'</span> folderLevel3 <span class="string">'/'</span> folderLevel4];
+0046     
+0047     <span class="comment">%currentFolder   = [pwd '/'];</span>
+0048     <span class="comment">%currentFolder   = strrep(currentFolder, '/', '/');</span>
+0049     <span class="comment">%copy parameters.mat</span>
+0050     copyfile(<span class="string">'parameters.mat'</span>, folderLevel1DA)
+0051     
+0052     
+0053     <span class="comment">%copy the file of the current folder with extension .mat only</span>
+0054     
+0055     
+0056     <span class="comment">%copy shift_xxx.mat files</span>
+0057     <span class="keyword">for</span> l=1:length(currentFolderContent)
+0058         <span class="keyword">if</span> ~isempty(strfind(currentFolderContent(l).name,<span class="string">'.mat'</span>)) &amp;&amp; ~isempty(strfind(currentFolderContent(l).name,<span class="string">'shift'</span>))
+0059             copyfile([<span class="string">'./'</span> currentFolderContent(l).name], folderLevel2DA)
+0060             delete([<span class="string">'./'</span> currentFolderContent(l).name]);
+0061         <span class="keyword">end</span>
+0062     <span class="keyword">end</span>
+0063     
+0064     
+0065     <span class="comment">% Copy files of the figure folder</span>
+0066     copyfile(<span class="string">'figure'</span>, folderLevel4DA, <span class="string">'f'</span>);
+0067 <span class="comment">%     for l=1:length(figureFolderContent)</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%         if ~isempty(strfind(figureFolderContent(l).name,'.fig'))</span>
+0070 <span class="comment">%             source          = ['./figure/' figureFolderContent(l).name]</span>
+0071 <span class="comment">%             destination     = [folderLevel4DA]</span>
+0072 <span class="comment">%             %system(['copy ' [currentFolder '/figure/' figureFolderContent(l).name] ' ' [folderLevel4DA]]);</span>
+0073 <span class="comment">%             movefile(source, destination, 'f');</span>
+0074 <span class="comment">%             %delete([currentFolder '/figure/' figureFolderContent(l).name]);</span>
+0075 <span class="comment">%         end</span>
+0076 <span class="comment">%     end</span>
+0077 <span class="keyword">end</span>
+0078</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

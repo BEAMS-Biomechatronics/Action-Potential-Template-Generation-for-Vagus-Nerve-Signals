@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getExternalVoltage</title>
+  <meta name="keywords" content="getExternalVoltage">
+  <meta name="description" content="getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>getExternalVoltage
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function Ve = getExternalVoltage(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage 
+ from Comsol Model.
+ Return Ve(numeroDeLaFibre, numeroDuNoeuds)
+ To use this function, you have to send the points in the form of an array
+ constructed with selectivity.utilities.getFiberCoordinates().
+ Input parameters are : 
+   $ comsolModel : the handle to the COMSOL model, loaded into the COMSOL server,
+       and already solved. 
+   $ fiberCoordinates;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+activatingFunction/AFvsCompleteModelvsPassiveModel.html" class="code" title="function [simFibre1, simFibre2] = AFvsCompleteModelvsPassiveModel()">AFvsCompleteModelvsPassiveModel</a>	</li><li><a href="../../+selectivity/+activatingFunction/getActivatingFunctionFromCoordinates.html" class="code" title="function [z, Vzz, Ve] = getActivatingFunctionFromCoordinates(model, fiberD, XY)">getActivatingFunctionFromCoordinates</a>	[z,Vzz] = getActivatingFunctionFromCoordinates(model, fiberD, XY)</li><li><a href="../../+selectivity/+anodalBlock/detectActivationWithShift.html" class="code" title="function [varargout] = detectActivationWithShift(varargin)">detectActivationWithShift</a>	detectActivationWithShift(varargin)</li><li><a href="../../+selectivity/+anodalBlock/detectTransition.html" class="code" title="function [varargout] = detectTransition()">detectTransition</a>	detectTransition()</li><li><a href="../../+selectivity/+anodalBlock/findOptimizedWF.html" class="code" title="function [WFOptim] = findOptimizedWF(positionFibre)">findOptimizedWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+anodalBlock/stepByStepWF.html" class="code" title="function [WFOptim] = stepByStepWF(positionFibre)">stepByStepWF</a>	UNTITLED5 Summary of this function goes here</li><li><a href="../../+selectivity/+optimAnode/plotMaxAFFunctionOfCuffL.html" class="code" title="function plotMaxAFFunctionOfCuffL()">plotMaxAFFunctionOfCuffL</a>	PLOTMAXAFFUNCTIONOFCUFFL</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Ve = getExternalVoltage(varargin)</a>
+0002 <span class="comment">% getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage</span>
+0003 <span class="comment">% from Comsol Model.</span>
+0004 <span class="comment">% Return Ve(numeroDeLaFibre, numeroDuNoeuds)</span>
+0005 <span class="comment">% To use this function, you have to send the points in the form of an array</span>
+0006 <span class="comment">% constructed with selectivity.utilities.getFiberCoordinates().</span>
+0007 <span class="comment">% Input parameters are :</span>
+0008 <span class="comment">%   $ comsolModel : the handle to the COMSOL model, loaded into the COMSOL server,</span>
+0009 <span class="comment">%       and already solved.</span>
+0010 <span class="comment">%   $ fiberCoordinates;</span>
+0011 
+0012     import com.comsol.model.*
+0013     import com.comsol.model.util.*
+0014 
+0015 
+0016     <span class="keyword">if</span> nargin == 2
+0017         comsolModel             = varargin{1};
+0018         XYZ                     = varargin{2};
+0019 
+0020         <span class="comment">% Extraction of coordinates</span>
+0021         xF                      = squeeze(XYZ(1,:,:));
+0022         yF                      = squeeze(XYZ(2,:,:));
+0023         zF                      = squeeze(XYZ(3,:,:));
+0024 
+0025         VeTemp = mphinterp(comsolModel ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF(:), yF(:), zF(:)]',<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0026         
+0027          <span class="comment">% find nFascile, nFibre, nNoeuds</span>
+0028         sizeXYZ                 = size(XYZ);
+0029         nFibre                  = sizeXYZ(2);
+0030         nNoeuds                 = sizeXYZ(3);
+0031         
+0032         <span class="comment">%   Création de la structure du tableau de Ve</span>
+0033         Ve                      = zeros(nFibre, nNoeuds);
+0034         
+0035         <span class="comment">%   MphInterp a renvoyé un vecteur avec toutes les tensions, il faut</span>
+0036         <span class="comment">%   les remettre en ordre pour respecter la structure du tableau des</span>
+0037         <span class="comment">%   coordonnées.</span>
+0038         indice = 1;
+0039         <span class="keyword">for</span> noeuds = 1:nNoeuds
+0040             <span class="keyword">for</span> <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a> = 1:nFibre
+0041                 Ve(<a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>, noeuds) = VeTemp(indice);
+0042                 indice = indice + 1;                
+0043             <span class="keyword">end</span>
+0044         <span class="keyword">end</span>
+0045 
+0046     <span class="keyword">else</span>
+0047         error(<span class="string">'selectivity:comsol:getExternalVoltage'</span>,<span class="string">'Wrong number of input parameters'</span>);
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

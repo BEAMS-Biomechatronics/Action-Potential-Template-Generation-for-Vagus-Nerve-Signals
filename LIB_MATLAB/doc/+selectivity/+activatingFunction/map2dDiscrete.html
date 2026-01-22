@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of map2dDiscrete</title>
+  <meta name="keywords" content="map2dDiscrete">
+  <meta name="description" content="map2dDiscrete(normChoice, [cMinMax]) plot the activating function for different locations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>map2dDiscrete
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>map2dDiscrete(normChoice, [cMinMax]) plot the activating function for different locations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function fig = map2dDiscrete(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> map2dDiscrete(normChoice, [cMinMax]) plot the activating function for different locations
+ and different size of fibers. It shows clearly the cathode and anode
+ area but also the virtual ones. 
+ normChoice must be one of this string :
+ - cathode
+ - anode
+ - absolute
+ The data are normalised or by the max of the activating function
+ value or by the min of the activating function. 
+ If you provide as a second (optional) parameter the limits of the
+ range you want to plot, figure will ploted accordingly to this will.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+comsol/twoRings.html" class="code" title="function out = twoRings(varargin)">twoRings</a>	The function generates a Comsol model with two rings. Input parameters</li><li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function fig = map2dDiscrete(varargin)</a>
+0002     <span class="comment">% map2dDiscrete(normChoice, [cMinMax]) plot the activating function for different locations</span>
+0003     <span class="comment">% and different size of fibers. It shows clearly the cathode and anode</span>
+0004     <span class="comment">% area but also the virtual ones.</span>
+0005     <span class="comment">% normChoice must be one of this string :</span>
+0006     <span class="comment">% - cathode</span>
+0007     <span class="comment">% - anode</span>
+0008     <span class="comment">% - absolute</span>
+0009     <span class="comment">% The data are normalised or by the max of the activating function</span>
+0010     <span class="comment">% value or by the min of the activating function.</span>
+0011     <span class="comment">% If you provide as a second (optional) parameter the limits of the</span>
+0012     <span class="comment">% range you want to plot, figure will ploted accordingly to this will.</span>
+0013     import selectivity.comsol.*
+0014     import selectivity.fibreModel.fibre.*
+0015     
+0016     
+0017     cMinMax = [];  
+0018     
+0019     <span class="keyword">if</span> nargin == 1
+0020         normChoice      = varargin{1};
+0021     <span class="keyword">elseif</span> nargin == 2
+0022         normChoice      = varargin{1};
+0023         cMinMax     = varargin{2};
+0024     <span class="keyword">else</span>
+0025         error(<span class="string">'number of input parameters is ! of 1 or 2'</span>);
+0026     <span class="keyword">end</span>
+0027 
+0028     <span class="comment">% plot's parameter</span>
+0029     nPosFacscicule      = 11;       <span class="comment">%3 * n -1 avec n entier</span>
+0030     nPosLongitudinal    = 401;      <span class="comment">%mettre un nombre impair (plus facile).</span>
+0031     nDimFiber           = 15;
+0032     minDimFiber         = 5e-6;
+0033     maxDimFiber         = 10e-6;
+0034     
+0035     
+0036     
+0037     <span class="comment">% loading parameters</span>
+0038     load parameters
+0039     
+0040     <span class="comment">% pre compute some value</span>
+0041     stepDimFiber        = (maxDimFiber-minDimFiber)/(nDimFiber-1);
+0042     epsilonBorder       = 1e-5;                                                     <span class="comment">%distance entre le point en bordure de fascicule et la frontière du fascicule</span>
+0043     stepPos             = (3*fascicleD/2-3*epsilonBorder)/(nPosFacscicule-2);
+0044     
+0045 
+0046 
+0047     fibreRange          = [minDimFiber:stepDimFiber:maxDimFiber];
+0048     positionRange1      = [0:stepPos:fascicleD/2-epsilonBorder];
+0049     positionRange2      = [nerveD/4-fascicleD/2+epsilonBorder:stepPos:nerveD/4+fascicleD/2-epsilonBorder];
+0050     positionRange       = [positionRange1 positionRange2];
+0051     
+0052     <span class="comment">%Model COMSOL</span>
+0053     <span class="comment">% if you want to change some parameters, it is here.</span>
+0054     <span class="comment">% but be aware that parameters.mat will change.</span>
+0055     <span class="comment">% Normally this code should be run in a directory with</span>
+0056     <span class="comment">% a parameters.mat file already fixed.</span>
+0057     <span class="comment">% If you want to change the parameters, do it as usual</span>
+0058     <span class="comment">% 1) parameterToChange = valueToChange</span>
+0059     <span class="comment">% 2) save('parameters.mat', 'parameterToChange', '-append');</span>
+0060     <span class="comment">%cuffL               = 5.1e-3;</span>
+0061     <span class="comment">%alpha               = -91.8654;                                % alphaSaline = -86.3545 alphaConjonctif = -91.8654</span>
+0062     save(<span class="string">'parameters.mat'</span>, <span class="string">'cuffL'</span>, <span class="string">'-append'</span>);
+0063     
+0064    
+0065     <span class="comment">% creating model and running it</span>
+0066     model               = <a href="../../+selectivity/+comsol/twoRings.html" class="code" title="function out = twoRings(varargin)">twoRings</a>();
+0067     
+0068     plotArray           = [];
+0069     VezzSave            = zeros(length(fibreRange),nPosLongitudinal*length(positionRange));
+0070     
+0071     fig = figure()
+0072     
+0073     zF1 = [-nerveL/2:nerveL/(nPosLongitudinal-1):nerveL/2];
+0074     <span class="keyword">for</span> iPos = 1:length(positionRange)
+0075         Vezz = zeros(length(fibreRange),nPosLongitudinal);
+0076         <span class="keyword">for</span> iDim = 1:length(fibreRange)
+0077             <span class="comment">% create a fiber object to retrieve internodale distance</span>
+0078             fibreInstance = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreRange(iDim),1,[0],20, 1, 1);
+0079             LFibre = fibreInstance.L;
+0080             
+0081             <span class="comment">% coordinates of the fibers</span>
+0082             xF = ones(1,length(zF1))*positionRange(iPos);
+0083             yF = zeros(1,length(zF1));
+0084             zF0 = zF1-ones(1,length(zF1))*LFibre;
+0085             zF2 = zF1+ones(1,length(zF1))*LFibre;
+0086     
+0087             Ve0 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF0],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0088             Ve1 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF1],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0089             Ve2 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF2],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0090            
+0091             Vezz(iDim,:) = courant_relatif*(Ve0+Ve2-2*Ve1);
+0092             
+0093         <span class="keyword">end</span>
+0094         
+0095         
+0096         <span class="comment">%sauvegarde des données</span>
+0097         VezzSave(:,1+(iPos-1)*nPosLongitudinal:iPos*nPosLongitudinal) = Vezz;
+0098         
+0099        
+0100         
+0101     <span class="keyword">end</span>
+0102     
+0103 
+0104     <span class="comment">%normalisation</span>
+0105     cMin = min(min(VezzSave));
+0106     cMax = max(max(VezzSave));
+0107     
+0108     
+0109     <span class="keyword">if</span> strfind(normChoice, <span class="string">'cathode'</span>)
+0110         deltac = cMax;
+0111     <span class="keyword">elseif</span> strfind(normChoice, <span class="string">'anode'</span>)
+0112         deltac = -cMin;
+0113     <span class="keyword">elseif</span> strfind(normChoice, <span class="string">'absolute'</span>)
+0114         deltac = 1;
+0115     <span class="keyword">else</span> 
+0116         error(<span class="string">'You did not choose a possible input parameter : cathode, anode or absolute'</span>);
+0117     <span class="keyword">end</span>
+0118       
+0119     VezzSave = VezzSave/deltac;
+0120     
+0121     <span class="comment">%nouvelle bornes supérieurs et inférieurs</span>
+0122     cMin = cMin/deltac;
+0123     cMax = cMax/deltac;
+0124     
+0125     <span class="keyword">for</span> iPos = 1:length(positionRange)
+0126         
+0127         [zPos,fibreDimGrid] = meshgrid(zF1,fibreRange);
+0128         h = subplot(length(positionRange),1,iPos);
+0129         
+0130         
+0131         <span class="comment">%subplot de la surface</span>
+0132         Vezz = VezzSave(:,1+(iPos-1)*nPosLongitudinal:iPos*nPosLongitudinal);
+0133         surf(fibreDimGrid, zPos, Vezz, <span class="string">'linestyle'</span>, <span class="string">'none'</span>)
+0134         shading interp
+0135         plotArray = [plotArray h];
+0136         
+0137         <span class="keyword">if</span> iPos==1
+0138              title(<span class="string">'Dérivée seconde discrète'</span>);
+0139         <span class="keyword">end</span>
+0140       
+0141          p = get(h, <span class="string">'pos'</span>);
+0142          p(4) = 0.1;
+0143          set(h, <span class="string">'pos'</span>, p);
+0144         
+0145         
+0146         
+0147         az = 90;
+0148         el = 90;
+0149         view(az, el);
+0150         <span class="comment">%set(gca,'visible','off')</span>
+0151         
+0152         <span class="comment">% choose the range to plot (saturated value beyond).</span>
+0153         <span class="keyword">if</span> isempty(cMinMax)
+0154             caxis(plotArray(iPos), [cMin, cMax]);
+0155         <span class="keyword">else</span>
+0156             caxis(plotArray(iPos), cMinMax);
+0157         <span class="keyword">end</span>
+0158         
+0159         <span class="keyword">if</span> iPos~=length(positionRange)
+0160             set(plotArray(iPos), <span class="string">'Visible'</span>,<span class="string">'off'</span>);  
+0161             xlabel(<span class="string">'Diam. fibre [m]'</span>);
+0162             ylabel(<span class="string">'Distance le long de la fibre [m]'</span>);
+0163         <span class="keyword">end</span>
+0164         colormap(jet(1024));
+0165     <span class="keyword">end</span>
+0166     
+0167     
+0168     <span class="comment">% Create textarrow</span>
+0169     annotation(fig,<span class="string">'textarrow'</span>,[0.0963541666666667 0.0963541666666667],<span class="keyword">...</span>
+0170     [0.931475884244373 0.184887459807074],<span class="string">'TextEdgeColor'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+0171     <span class="string">'TextRotation'</span>,90,<span class="keyword">...</span>
+0172     <span class="string">'VerticalAlignment'</span>,<span class="string">'top'</span>,<span class="keyword">...</span>
+0173     <span class="string">'String'</span>,{<span class="string">'distance au centre du nerf'</span>},<span class="keyword">...</span>
+0174     <span class="string">'HeadStyle'</span>,<span class="string">'cback1'</span>);
+0175 
+0176     <span class="comment">% Create colorbar</span>
+0177     colorbar(<span class="string">'Position'</span>, [0.942847222222221 0.138263665594855 0.0212152777777789 0.755016077170417]);
+0178     <span class="comment">%colorbar('peer',plotArray(end), [0.942847222222221 0.138263665594855 0.0212152777777789 0.755016077170417]);</span>
+0179     
+0180     <span class="comment">%text box to indicate parameters</span>
+0181     stringParameters = sprintf(<span class="string">'Diam. cathode : %0.3f mm \nDiam. anode : %0.3f mm \nDiam. fascicle : %0.3f mm \nDiam. nerf : %0.3f mm \n|e|electode : %0.3f mm \nLongueur cuff (isolant) : %0.2f mm\nExt. cond. (inside cuff) : %0.2f S/m'</span>, ring2D*1e3, ring1D*1e3, fascicleD*1e3, nerveD*1e3, ringD*1e3, cuffL*1e3,  sigmaEXT)
+0182     annotation(gcf,<span class="string">'textbox'</span>, [0.1 0.4 0.15 0.15], <span class="string">'String'</span>,stringParameters, <span class="string">'FitBoxToText'</span>,<span class="string">'off'</span>, <span class="string">'BackgroundColor'</span>,[1 1 1]);
+0183 
+0184    
+0185 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

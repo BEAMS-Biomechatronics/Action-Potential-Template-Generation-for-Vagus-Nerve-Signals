@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parametersTwoRings</title>
+  <meta name="keywords" content="parametersTwoRings">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>parametersTwoRings
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function parametersTwoRings() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="twoRings.html" class="code" title="function out = twoRings(varargin)">twoRings</a>	The function generates a Comsol model with two rings. Input parameters</li><li><a href="../../+selectivity/+stimWaveForm/stimWaveForm.html" class="code" title="">stimWaveForm</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function parametersTwoRings()</a>
+0002     import selectivity.utilities.*
+0003 
+0004     <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0005     <span class="comment">%           paramètres NON modifiable !              %</span>
+0006     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0007     nerveD              = 1.9e-3;
+0008     fascicleD           = 400e-6;
+0009     fasciculeLayer      = 50e-6; <span class="comment">%aucune importance, le perineurium fait 5% du diamètre (Deurloo2004 ?)</span>
+0010     sigmaSaline         = 2;
+0011     sigmaEpineurium     = 0.008;
+0012     sigmaPerineurium    = 0.00336;
+0013     sigmaFasciculexy    = 0.08;
+0014     sigmaFasciculez     = 0.5;
+0015     sigmaConjonctive    = 0.16;
+0016     nerveL              = 40e-3;
+0017     ringTorusD          = 30e-6;
+0018     ringCuffD           = nerveD*1.5;
+0019     courant             = 1; <span class="comment">%A, régle de trois pour le courant réel.</span>
+0020 
+0021 
+0022     <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0023     <span class="comment">%           paramètres modifiables !                 %</span>
+0024     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0025 
+0026     sigmaEXT = sigmaConjonctive;                <span class="comment">% conductivité externe à la fibre dans la cuff.</span>
+0027 
+0028     <span class="comment">%Paramètres du modèle modifiable depuis ce script (COMSOL)</span>
+0029     ring1D          = 1.95e-3;                  <span class="comment">% [m] diamètre de l'anneau 1.</span>
+0030     ring2D          = 2.6e-3;                   <span class="comment">% [m] diamètre de l'anneau 2.</span>
+0031     ringD           = 2e-3;                     <span class="comment">% [m] distance entre les deux anneaux.</span>
+0032     cuffL           = 2.2e-3;                     <span class="comment">% [m]longueur de la cuff (isolant)</span>
+0033    
+0034     <span class="comment">% computing parameter for parallel loop</span>
+0035     nProc           = 6;                        <span class="comment">% Nombre de processeurs dispo sur la machine</span>
+0036     
+0037     <span class="comment">%Paramètres du script modifiable qui n'intervient que dans le calcul des AP</span>
+0038     <span class="comment">%(MATLAB)</span>
+0039     fibre_d         = 5e-6;                     <span class="comment">% [m] diamètre de la fibre</span>
+0040     courant_relatif = 100e-3;                   <span class="comment">% [A] 0.2e-4</span>
+0041 
+0042     <span class="comment">%densité des sondes dans chacun des fascicules sont donnés sous la forme</span>
+0043     <span class="comment">%suivante: Une sonde au centre de la fascicule. Ensuite, position sur des cercles concentriques.</span>
+0044     <span class="comment">%(nCouche) représente le nombre de couches voulues (nombre de cercles).</span>
+0045     <span class="comment">%(nInit) représente le nombre de points sur le premier cercle. Ensuite sur</span>
+0046     <span class="comment">%les cercles suivants, la densité de point est identique à la première</span>
+0047     <span class="comment">%(même longueur d'arc de cercle entre les points.</span>
+0048     nCouche         = 3;
+0049     nInit           = 4;
+0050 
+0051     <span class="comment">%Fonctions appelées</span>
+0052     <span class="comment">%Modèle COMSOL</span>
+0053     <span class="comment">% Parmi les choix suivants :</span>
+0054     <span class="comment">% - fasciclesDeurloo</span>
+0055     <span class="comment">% - fasciclesDeurlooCylinderElectrode</span>
+0056     <span class="comment">% - fasciclesDeurlooParaboleAnode</span>
+0057     comsolModel     = @<a href="twoRings.html" class="code" title="function out = twoRings(varargin)">twoRings</a>; 
+0058 
+0059 
+0060 
+0061     <span class="comment">%Nombre de tests effectués pour chaque diamètre de fibre de décalage du</span>
+0062     <span class="comment">%noeuds centrale de part et d'autre -&gt; NTotalDeShift = nNodeShift*2 + 1</span>
+0063     <span class="comment">%               nNodeShift   &lt;-...  |   |   0   |   |  ...-&gt; nNodeShift</span>
+0064     nNodeShift      = 0;
+0065 
+0066 
+0067     <span class="comment">% Temperature in celsius</span>
+0068     TC         = 20;
+0069     
+0070     
+0071     <span class="comment">%%Stimulation WaveForm properties</span>
+0072     TPulseGlobal                    = 100e-3;
+0073     TPulsePrepulse                  = 0;
+0074     TPulseSurounding                = 100e-3;
+0075     StartPulseGlobal                = 0;
+0076     StartPulsePrepulse              = 0;
+0077     StartPulseSurounding            = 0;
+0078     TTransition                     = 1e-6;
+0079     AmpPulseGlobal                  = 2.3e-3;
+0080     AmpPulsePrepulse                = 0;
+0081     AmpPulseSurounding              = 0.5e-3;             
+0082 
+0083     WF                              = <a href="../../+selectivity/+stimWaveForm/stimWaveForm.html" class="code" title="">stimWaveForm</a>();
+0084     WF.setParameters(TPulseGlobal, TPulsePrepulse, TPulseSurounding, StartPulseGlobal, StartPulsePrepulse, StartPulseSurounding, TTransition, AmpPulseGlobal, AmpPulsePrepulse, AmpPulseSurounding);
+0085     WF.saveParameters();
+0086     save(<span class="string">'parameters.mat'</span>);
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

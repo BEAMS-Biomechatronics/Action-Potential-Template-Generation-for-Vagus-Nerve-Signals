@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fascicles</title>
+  <meta name="keywords" content="fascicles">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>fascicles
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fascicles.html" class="code" title="">fascicles</a>	</li><li><a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>	send back xy coordinates of a circle of centerXY and radius R</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fascicles.html" class="code" title="">fascicles</a>	</li><li><a href="parametersParaboleAnode.html" class="code" title="function parametersParaboleAnode()">parametersParaboleAnode</a>	This function make a parameters.mat file containing the default</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function o = fascicles(varargin)</a></li><li><a href="#_sub2" class="code">function comsolGeom(o, model)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 classdef <a href="fascicles.html" class="code" title="">fascicles</a> &lt; handle
+0002 <span class="comment">% fasciclesnerveD [m], [polyShape = cell (1 x nFas), numberOfFascicles, fitToNerve = true,{false}]</span>
+0003     <span class="comment">% - fasciclesnerveD is the diameter of the nerve needed to fill it with</span>
+0004     <span class="comment">%   fascicles. Position of the nerve is supposed to be centered in (0,0).</span>
+0005     <span class="comment">% - polyShape is the points of polygon defining facicles</span>
+0006     <span class="comment">%   diameters is an array with diameter of the different fascicles</span>
+0007     <span class="comment">% - numberOfFascicles is obvious</span>
+0008     <span class="comment">% - fitToNerve is a boolean which enable or not the matching of</span>
+0009     <span class="comment">%   fascicles inside the nerve (normalization + centering).</span>
+0010     <span class="comment">% If the optional parameters are not used as inputs, the default</span>
+0011     <span class="comment">% parameters will apply (400 µm Diameters, with stellar disposition).</span>
+0012 
+0013     properties
+0014         
+0015         polyShape;
+0016         numberOfFascicles;        
+0017         nerveD;
+0018         fitToNerve;
+0019                 
+0020     <span class="keyword">end</span>
+0021     
+0022     methods
+0023         <a name="_sub0" href="#_subfunctions" class="code">function o = fascicles(varargin)</a>
+0024         <span class="comment">% fascicles(nerveD [m], [polyShape = cell (1 x nFas), numberOfFascicles, fitToNerve = true,{false}])</span>
+0025             
+0026             import selectivity.utilities.*
+0027         
+0028             <span class="comment">% v1.0</span>
+0029             <span class="keyword">if</span> nargin == 3 || nargin == 4
+0030                 o.nerveD                = varargin{1};
+0031                 o.polyShape             = varargin{2}; <span class="comment">%cell 1 x nFas [x1 x2 x3... ; y1 y2 y3 ...]</span>
+0032                 o.numberOfFascicles     = varargin{3};
+0033                 <span class="keyword">if</span> nargin == 4
+0034                     o.fitToNerve        = varargin{4};
+0035                 <span class="keyword">else</span>
+0036                     o.fitToNerve        = 0;
+0037                 <span class="keyword">end</span>
+0038             <span class="comment">% default</span>
+0039             <span class="keyword">elseif</span> nargin == 1
+0040                 o.nerveD                = varargin{1};
+0041                 o.polyShape             = cell(1,5);
+0042                 o.polyShape{1}          = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([0 0], 200e-6, 15)';
+0043                 o.polyShape{2}          = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([o.nerveD/4 0] , 200e-6, 15)';
+0044                 o.polyShape{3}          = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([0 o.nerveD/4] , 200e-6, 15)';
+0045                 o.polyShape{4}          = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([-o.nerveD/4 0], 200e-6, 15)';
+0046                 o.polyShape{5}          = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([0 -o.nerveD/4], 200e-6, 15)';
+0047                 o.numberOfFascicles     = 5;
+0048                 o.fitToNerve            = 0;
+0049                                 
+0050             <span class="keyword">else</span>
+0051                 
+0052                 error(<span class="string">'selectivity:comsol:fascicles'</span>,<span class="string">'error : input number of arguments is incorrect.'</span>);
+0053             <span class="keyword">end</span>
+0054                    
+0055             <span class="comment">% homothétie to have all contour inside the nerve (v1.0)</span>
+0056             <span class="keyword">if</span> o.fitToNerve
+0057                 
+0058                 
+0059                 <span class="comment">% main properties of polygons defining contours of fasciles</span>
+0060                 minX        = zeros(1,o.numberOfFascicles);
+0061                 maxX        = zeros(1,o.numberOfFascicles);
+0062                 minY        = zeros(1,o.numberOfFascicles);
+0063                 maxY        = zeros(1,o.numberOfFascicles);
+0064                 polygonArea = zeros(1,o.numberOfFascicles);
+0065                 
+0066                 <span class="comment">% saving points</span>
+0067                 xSave = [];
+0068                 ySave = [];
+0069 
+0070                 <span class="keyword">for</span> k = 1:o.numberOfFascicles
+0071                     minX(k)         = min(o.polyShape{k}(1,:));
+0072                     maxX(k)         = max(o.polyShape{k}(1,:));
+0073                     minY(k)         = min(o.polyShape{k}(2,:));
+0074                     maxY(k)         = max(o.polyShape{k}(2,:));
+0075                     polygonArea(k)  = polyarea(o.polyShape{k}(1,:)', o.polyShape{k}(2,:)');
+0076                     
+0077                     xSave = [xSave o.polyShape{k}(1,:)];
+0078                     ySave = [ySave o.polyShape{k}(2,:)];
+0079                 <span class="keyword">end</span>
+0080 
+0081                 <span class="comment">% XY coordinates in the right shape</span>
+0082                 XY = [xSave; ySave]';
+0083                 
+0084                 <span class="comment">% finding the minimum radius circle</span>
+0085                 [minimumRadius,centerCircle,~]= selectivity.utilities.circles.ExactMinBoundCircle(XY);
+0086                 
+0087                 <span class="comment">%maillage</span>
+0088 <span class="comment">%                 LX = max(maxX) - min(minX);</span>
+0089 <span class="comment">%                 LY = max(maxY) - min(minY);</span>
+0090 <span class="comment">%</span>
+0091                 <span class="comment">% center</span>
+0092 <span class="comment">%                 centerX         = (max(maxX)+min(minX))/2;</span>
+0093 <span class="comment">%                 centerY         = (max(maxY)+min(minY))/2;</span>
+0094 <span class="comment">%</span>
+0095                 <span class="comment">% set center to zero</span>
+0096                 <span class="keyword">for</span> k=1:o.numberOfFascicles 
+0097                     o.polyShape{k} = o.polyShape{k} - centerCircle' * ones(size(o.polyShape{k}(1,:)));
+0098                 <span class="keyword">end</span>
+0099                 
+0100                 
+0101 <span class="comment">%                 maxDistanceFromCenter = 0;</span>
+0102 <span class="comment">%                 for k=1:o.numberOfFascicles</span>
+0103 <span class="comment">%                     contourPoly         = o.polyShape{k};</span>
+0104 <span class="comment">%                     distanceFromCenter = max(sqrt(contourPoly(1,:).^2+contourPoly(2,:).^2));</span>
+0105 <span class="comment">%                     if distanceFromCenter &gt; maxDistanceFromCenter</span>
+0106 <span class="comment">%                         maxDistanceFromCenter = distanceFromCenter;</span>
+0107 <span class="comment">%                     end</span>
+0108 <span class="comment">%                 end</span>
+0109                 <span class="keyword">for</span> k=1:o.numberOfFascicles 
+0110                     o.polyShape{k} = (0.95*o.nerveD/2) * o.polyShape{k} / minimumRadius;
+0111                 <span class="keyword">end</span>
+0112             <span class="keyword">end</span>
+0113         <span class="keyword">end</span>
+0114         
+0115         <a name="_sub1" href="#_subfunctions" class="code">function comsolGeom(o, model)</a>
+0116             
+0117             
+0118             <span class="comment">% working plan to drawn polygon (extrusion after)</span>
+0119             model.geom(<span class="string">'geom1'</span>).feature.create(<span class="string">'wp1'</span>, <span class="string">'WorkPlane'</span>);
+0120             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).set(<span class="string">'unite'</span>, true);
+0121             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).set(<span class="string">'quickz'</span>, <span class="string">'nerveLComsol/2'</span>);
+0122             model.geom(<span class="string">'geom1'</span>).runPre(<span class="string">'fin'</span>);
+0123                 
+0124             <span class="keyword">for</span> k = 1:o.numberOfFascicles
+0125                 polyStringName          = sprintf(<span class="string">'pol%d'</span>, k);
+0126 
+0127                 XPoly                   = num2str(o.polyShape{k}(1,:));
+0128                 YPoly                   = num2str(o.polyShape{k}(2,:));
+0129 
+0130                
+0131                 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.create(polyStringName, <span class="string">'Polygon'</span>);
+0132                 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.feature(polyStringName).set(<span class="string">'x'</span>, XPoly);
+0133                 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.feature(polyStringName).set(<span class="string">'y'</span>, YPoly);
+0134                 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.run(polyStringName);
+0135                 model.geom(<span class="string">'geom1'</span>).run(<span class="string">'wp1'</span>);
+0136 
+0137                 
+0138             <span class="keyword">end</span>
+0139             
+0140             <span class="comment">% extrusion</span>
+0141             model.geom(<span class="string">'geom1'</span>).feature.create(<span class="string">'ext1'</span>, <span class="string">'Extrude'</span>);
+0142             model.geom(<span class="string">'geom1'</span>).run(<span class="string">'ext1'</span>);
+0143             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).setIndex(<span class="string">'distance'</span>, <span class="string">'nerveLComsol'</span>, 0);
+0144 
+0145             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'reverse'</span>, <span class="string">'on'</span>);
+0146 
+0147             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'contributeto'</span>, <span class="string">'csel4'</span>);
+0148 
+0149             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0150             model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'selresultshow'</span>, <span class="string">'all'</span>);
+0151 
+0152         <span class="keyword">end</span>
+0153     <span class="keyword">end</span>
+0154 <span class="keyword">end</span>
+0155</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

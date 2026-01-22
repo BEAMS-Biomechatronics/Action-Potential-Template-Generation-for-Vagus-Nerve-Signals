@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of virtualCathodeCostFunction</title>
+  <meta name="keywords" content="virtualCathodeCostFunction">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +optimAnode -->
+<h1>virtualCathodeCostFunction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cost = virtualCathodeCostFunction(input) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li><li><a href="../../+selectivity/+stimWaveForm/stimWaveFormLinesByPieces.html" class="code" title="">stimWaveFormLinesByPieces</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="optimizeAlpha.html" class="code" title="function optimizeAlpha()">optimizeAlpha</a>	Load package to establish parameters</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cost = virtualCathodeCostFunction(input)</a>
+0002     import selectivity.comsol.*
+0003     import selectivity.stimWaveForm.*
+0004     import selectivity.fibreModel.fibre.*
+0005     
+0006     alphaSent = input(1);
+0007     
+0008     <span class="comment">%Paramètres propres à la fonction</span>
+0009     nPosFacscicule      = 11;        <span class="comment">%3 * n -1 avec n entier</span>
+0010     nPosLongitudinal    = 401;      <span class="comment">%mettre un nombre impair (plus facile).</span>
+0011     nDimFiber           = 10;
+0012     minDimFiber         = 5e-6;
+0013     maxDimFiber         = 7.5e-6;
+0014     
+0015     <span class="comment">%initialisation de la variable cout à 0</span>
+0016     cost = 0;    
+0017     
+0018     <span class="comment">%paramètres à modifier dans le fichier</span>
+0019     <span class="comment">%selectivty.comsol.parametersParaboleAnode</span>
+0020     <span class="comment">%(va générer le fichiers parameters.mat)</span>
+0021     load parameters
+0022     
+0023     <span class="comment">%Parmi les paramètres, on ne modifie que la valeur de alpha.</span>
+0024     alpha = alphaSent;
+0025     save(<span class="string">'changeParameters.mat'</span>, <span class="string">'alpha'</span>, <span class="string">'-append'</span>);
+0026     selectivity.comsol.parametersParaboleAnode();
+0027     
+0028     stepDimFiber        = (maxDimFiber-minDimFiber)/(nDimFiber-1);
+0029     epsilonBorder       = 1e-5; <span class="comment">%distance entre le point en bordure de fascicule et la frontière du fascicule</span>
+0030     stepPos             = nerveD/2/nPosFacscicule;
+0031     
+0032 
+0033 
+0034     fibreRange          = [minDimFiber:stepDimFiber:maxDimFiber];
+0035     positionRange       = [0:stepPos:nerveD/2-epsilonBorder];
+0036 
+0037     
+0038     <span class="comment">%Model COMSOL</span>
+0039     model = comsolModel();
+0040     study = model.study(<span class="string">'std1'</span>);
+0041     data = model.result.dataset(<span class="string">'dset1'</span>);
+0042 
+0043     <span class="comment">%running model</span>
+0044     cMinMax = [];
+0045     plotArray = [];
+0046     VezzSave = zeros(length(fibreRange),nPosLongitudinal*length(positionRange));
+0047     
+0048     fig = figure()
+0049     VeGrandeFibre = [];
+0050     
+0051     zF1 = [-2*cuffL:4*cuffL/(nPosLongitudinal-1):2*cuffL];
+0052     <span class="keyword">for</span> iPos = 1:length(positionRange)
+0053         Vezz = zeros(length(fibreRange),nPosLongitudinal);
+0054         <span class="keyword">for</span> iDim = 1:length(fibreRange) 
+0055             WF = <a href="../../+selectivity/+stimWaveForm/stimWaveFormLinesByPieces.html" class="code" title="">stimWaveFormLinesByPieces</a>();
+0056             fibreInstance = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fibreRange(iDim),1,20,WF,WF);
+0057             LFibre = fibreInstance.L;
+0058             
+0059             xF = ones(1,length(zF1))*positionRange(iPos);
+0060             yF = zeros(1,length(zF1));
+0061             zF0 = zF1-ones(1,length(zF1))*LFibre;
+0062             zF2 = zF1+ones(1,length(zF1))*LFibre;
+0063     
+0064             Ve0 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF0],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0065             Ve1 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF1],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0066             Ve2 = mphinterp(model ,<span class="string">'V'</span>,<span class="string">'coord'</span>, [xF; yF; zF2],<span class="string">'dataset'</span>,<span class="string">'dset1'</span>);
+0067             <span class="comment">%figure()</span>
+0068             <span class="comment">%plot(zF1, Ve1)</span>
+0069             Vezz(iDim,:) = (Ve0+Ve2-2*Ve1);
+0070             <span class="keyword">if</span> iPos == length(positionRange) &amp;&amp; iDim == length(fibreRange)
+0071                 VeGrandeFibre = Ve1;
+0072             <span class="keyword">end</span>
+0073             
+0074         <span class="keyword">end</span>
+0075         
+0076         
+0077         <span class="comment">%sauvegarde des données</span>
+0078         VezzSave(:,1+(iPos-1)*nPosLongitudinal:iPos*nPosLongitudinal) = Vezz;
+0079         
+0080        
+0081         
+0082     <span class="keyword">end</span>
+0083     
+0084 
+0085     <span class="comment">%normalisation</span>
+0086     cMin = min(min(VezzSave));
+0087     cMax = max(max(VezzSave));
+0088     deltac = cMax-cMin;
+0089     
+0090     <span class="comment">%VezzSave = VezzSave/deltac;</span>
+0091     VezzSave = VezzSave/cMax;
+0092     
+0093     <span class="comment">%nouvelle bornes supérieurs et inférieurs</span>
+0094     cMin = cMin/cMax;<span class="comment">%cMin/deltac;</span>
+0095     cMax = 1;<span class="comment">%cMax/deltac;</span>
+0096     
+0097     <span class="keyword">for</span> iPos = 1:length(positionRange)
+0098         
+0099         [zPos,fibreDimGrid] = meshgrid(zF1,fibreRange);
+0100         h = subplot(length(positionRange),1,iPos);
+0101         
+0102         
+0103         <span class="comment">%subplot de la surface</span>
+0104         Vezz = VezzSave(:,1+(iPos-1)*nPosLongitudinal:iPos*nPosLongitudinal);
+0105         surf(fibreDimGrid, zPos, Vezz, <span class="string">'linestyle'</span>, <span class="string">'none'</span>)
+0106         shading interp
+0107         plotArray = [plotArray h];
+0108         
+0109         <span class="keyword">if</span> iPos==1
+0110              title(<span class="string">'Dérivée seconde discrète'</span>);
+0111         <span class="keyword">end</span>
+0112       
+0113          p = get(h, <span class="string">'pos'</span>);
+0114          p(4) = 0.1;
+0115          set(h, <span class="string">'pos'</span>, p);
+0116         
+0117         
+0118         
+0119         az = 90;
+0120         el = 90;
+0121         view(az, el);
+0122         <span class="comment">%set(gca,'visible','off')</span>
+0123         
+0124         
+0125         caxis(plotArray(iPos), [cMin, cMax]);
+0126         <span class="comment">%caxis(plotArray(iPos), [0 0.03]);</span>
+0127         
+0128         <span class="keyword">if</span> iPos~=length(positionRange)
+0129             set(plotArray(iPos), <span class="string">'Visible'</span>,<span class="string">'off'</span>);  
+0130             xlabel(<span class="string">'Diam. fibre [m]'</span>);
+0131             ylabel(<span class="string">'Distance le long de la fibre [m]'</span>);
+0132         <span class="keyword">end</span>
+0133         colormap(jet(1024));
+0134         
+0135         
+0136         
+0137            
+0138     <span class="keyword">end</span>
+0139     
+0140     
+0141     figVezz = figure()
+0142     VezzGrandeFibre = VezzSave(<span class="keyword">end</span>,(length(positionRange)-1)*nPosLongitudinal:end);
+0143     size(VezzGrandeFibre)
+0144     plot(VezzGrandeFibre)
+0145     [maxVgrandeFibre, indMaxVgrandeFibre] = max(VeGrandeFibre);
+0146    
+0147    cost = findpeaks(VezzGrandeFibre(indMaxVgrandeFibre:end),<span class="string">'NPEAKS'</span>,1);
+0148     
+0149     <span class="comment">% Create textarrow</span>
+0150     annotation(fig,<span class="string">'textarrow'</span>,[0.0963541666666667 0.0963541666666667],<span class="keyword">...</span>
+0151     [0.931475884244373 0.184887459807074],<span class="string">'TextEdgeColor'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+0152     <span class="string">'TextRotation'</span>,90,<span class="keyword">...</span>
+0153     <span class="string">'VerticalAlignment'</span>,<span class="string">'top'</span>,<span class="keyword">...</span>
+0154     <span class="string">'String'</span>,{<span class="string">'distance au centre du nerf'</span>},<span class="keyword">...</span>
+0155     <span class="string">'HeadStyle'</span>,<span class="string">'cback1'</span>);
+0156 
+0157     <span class="comment">% Create colorbar</span>
+0158     colorbar(plotArray(end),<span class="keyword">...</span>
+0159     <span class="string">'Position'</span> ,[0.942847222222221 0.138263665594855 0.0212152777777789 0.755016077170417]);
+0160     
+0161     <span class="comment">%text box to indicate parameters</span>
+0162     stringParameters = sprintf(<span class="string">'Diam. cathode : %0.3f mm \nDiam. anode : %0.3f mm \nDiam. nerf : %0.3f mm \n|e|electode : %0.3f mm \nLongueur cuff (isolant) : %0.2f mm\nExt. cond. (inside cuff) : %0.2f S/m\ncuffL : %f\nalpha : %f'</span>, ring2D*1e3, ring1D*1e3, nerveD*1e3, ringD*1e3, cuffL*1e3,  sigmaEXT, cuffL, alpha)
+0163     annotation(gcf,<span class="string">'textbox'</span>, [0.1 0.4 0.15 0.15], <span class="string">'String'</span>,stringParameters, <span class="string">'FitBoxToText'</span>,<span class="string">'off'</span>, <span class="string">'BackgroundColor'</span>,[1 1 1]);
+0164 
+0165     <span class="comment">%saveData</span>
+0166     filename = sprintf(<span class="string">'alpha%2.0f_map2Derivative_cuffL%f.fig'</span>,alpha,cuffL); 
+0167     saveas(fig,filename);
+0168 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

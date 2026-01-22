@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dot</title>
+  <meta name="keywords" content="dot">
+  <meta name="description" content="DOT comsol Model for Dot configuration (current sources)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>dot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>DOT comsol Model for Dot configuration (current sources)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function model = dot(currentNodeID, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DOT comsol Model for Dot configuration (current sources)
+  currentNodeID give the dot which must be set to 1 ampere.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function model = dot(currentNodeID, varargin)</a>
+0002 <span class="comment">%DOT comsol Model for Dot configuration (current sources)</span>
+0003 <span class="comment">%  currentNodeID give the dot which must be set to 1 ampere.</span>
+0004 
+0005     import com.comsol.model.*
+0006     import com.comsol.model.util.*
+0007 
+0008 model = ModelUtil.create(sprintf(<span class="string">'ModelDots%04d'</span>,currentNodeID));
+0009 ModelUtil.showProgress(true);
+0010 
+0011 model.modelPath(pwd);
+0012 
+0013 model.label(sprintf(<span class="string">'ModelDots%04d.mph'</span>,currentNodeID));
+0014 
+0015 model.comments([<span class="string">'Basis\n\nno Comment'</span>]);
+0016 
+0017 load parameters;
+0018 
+0019 I = [];
+0020 <span class="keyword">if</span> nargin == 2
+0021     I = varargin{1};
+0022 <span class="keyword">end</span>
+0023 
+0024 
+0025 <span class="comment">% classical parameters</span>
+0026 
+0027 model.param.set(<span class="string">'x0'</span>, <span class="string">'0'</span>);
+0028 
+0029 model.param.set(<span class="string">'nerveD'</span>, sprintf(<span class="string">'%0.5f[m]'</span>,nerveD));
+0030 model.param.set(<span class="string">'fasciculeD'</span>, sprintf(<span class="string">'%0.8f[m]'</span>,fascicleD));
+0031 model.param.set(<span class="string">'fasciculeLayer'</span>, sprintf(<span class="string">'%0.8f[m]'</span>,fasciculeLayer));
+0032 model.param.set(<span class="string">'sigmaSaline'</span>,sprintf(<span class="string">'%0.10f[S/m]'</span>,sigmaSaline));
+0033 model.param.set(<span class="string">'sigmaEpineurium'</span>,sprintf(<span class="string">'%0.10f[S/m]'</span>,sigmaEpineurium));
+0034 model.param.set(<span class="string">'sigmaPerineurium'</span>,sprintf(<span class="string">'%0.10f[S/m]'</span>,sigmaPerineurium));
+0035 model.param.set(<span class="string">'sigmaFasciculexy'</span>,sprintf(<span class="string">'%0.10f[S/m]'</span>,sigmaFasciculexy));
+0036 model.param.set(<span class="string">'sigmaFasciculez'</span>,sprintf(<span class="string">'%0.10f[S/m]'</span>,sigmaFasciculez));
+0037 model.param.set(<span class="string">'sigmaEXT'</span>,sprintf(<span class="string">'%0.10f[m]'</span>,sigmaEXT));
+0038 model.param.set(<span class="string">'ringD'</span>, sprintf(<span class="string">'%0.6f[m]'</span>,ringD));
+0039 model.param.set(<span class="string">'ringCuffD'</span>, sprintf(<span class="string">'%0.6f[m]'</span>,ringCuffD));
+0040 
+0041 model.param.set(<span class="string">'nerveLComsol'</span>,sprintf(<span class="string">'%0.6f[m]'</span>,nerveLComsol));
+0042 model.param.set(<span class="string">'courant'</span>, sprintf(<span class="string">'%0.5f[A]'</span>,courant));
+0043 model.param.set(<span class="string">'cuffL'</span>, sprintf(<span class="string">'%0.6f[m]'</span>,cuffL));
+0044 model.param.set(<span class="string">'LayerBC'</span>, <span class="string">'100[mm]'</span>);
+0045 
+0046 model.param.set(<span class="string">'sigmaConjonctive'</span>, sprintf(<span class="string">'%0.6f[m]'</span>,sigmaConjonctive));
+0047 model.param.set(<span class="string">'epFascicleLayer'</span>, sprintf(<span class="string">'%0.6f[m]'</span>,epFascicleLayer));
+0048 
+0049 <span class="comment">% dots specific parameters</span>
+0050 model.param.set(<span class="string">'dotsNRevolve'</span>, sprintf(<span class="string">'%d'</span>,dotsNRevolve));
+0051 model.param.set(<span class="string">'dotsNLongitudinal'</span>,sprintf(<span class="string">'%d'</span>,dotsNLongitudinal));
+0052 model.param.set(<span class="string">'dotsWidth'</span>, sprintf(<span class="string">'%0.10f[m]'</span>,dotsWidth) , <span class="string">'theta dimension (dimension !)'</span>);
+0053 model.param.set(<span class="string">'dotsLength'</span>, sprintf(<span class="string">'%0.10f[m]'</span>,dotsLength), <span class="string">'Longitudinal dimension of dot'</span>);
+0054 model.param.set(<span class="string">'dotsDepth'</span>,  sprintf(<span class="string">'%0.10f[m]'</span>,dotsDepth), <span class="string">'radial dimension of dot'</span>);
+0055 model.param.set(<span class="string">'dotsOffCenter'</span>, sprintf(<span class="string">'%0.10f[m]'</span>,dotsOffCenter), <span class="string">'distance of dots and center line of nerve'</span>);
+0056 model.param.set(<span class="string">'dotsAngle'</span>, <span class="string">'dotsWidth/dotsOffCenter'</span>, <span class="string">'radian'</span>);
+0057 model.param.set(<span class="string">'dotsZFirst'</span>, sprintf(<span class="string">'%0.10f[m]'</span>,dotsZFirst));
+0058 model.param.set(<span class="string">'dotsZLast'</span>,  sprintf(<span class="string">'%0.10f[m]'</span>,dotsZLast));
+0059 
+0060 <span class="keyword">for</span> i=1:dotsNRevolve*dotsNLongitudinal
+0061     model.param.set(sprintf(<span class="string">'I%d'</span>,i),  sprintf(<span class="string">'%d'</span>,0));
+0062 <span class="keyword">end</span>
+0063 
+0064 model.modelNode.create(<span class="string">'comp1'</span>);
+0065 
+0066 model.geom.create(<span class="string">'geom1'</span>, 3);
+0067 
+0068 model.mesh.create(<span class="string">'mesh1'</span>, <span class="string">'geom1'</span>);
+0069 
+0070 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel7'</span>, <span class="string">'CumulativeSelection'</span>);
+0071 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel7'</span>).label(<span class="string">'ring2Domain'</span>);
+0072 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel8'</span>, <span class="string">'CumulativeSelection'</span>);
+0073 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel8'</span>).label(<span class="string">'ring1Domain'</span>);
+0074 
+0075 
+0076 <span class="comment">% selections specific to dots</span>
+0077 <span class="keyword">for</span> i = 1:dotsNRevolve*dotsNLongitudinal
+0078     <span class="comment">% surface string name (selection)</span>
+0079     <span class="comment">% cselDotsSurface0001   -&gt; dotsSurface0001</span>
+0080     stringCSelSurface   = sprintf(<span class="string">'cselDotsSurface%04d'</span>, i);
+0081     stringdotsSurface   = sprintf(<span class="string">'dotsSurface%04d'</span>, i);
+0082     <span class="comment">% volume string name (selection)</span>
+0083     <span class="comment">% cselDotsVolume0001    -&gt; dotsVolume0001</span>
+0084     stringCSelVolume    = sprintf(<span class="string">'cselDotsVolume%04d'</span>, i); 
+0085     stringdotsVolume    = sprintf(<span class="string">'dotsVolume%04d'</span>, i);
+0086     
+0087     model.geom(<span class="string">'geom1'</span>).selection.create(stringCSelSurface, <span class="string">'CumulativeSelection'</span>);
+0088     model.geom(<span class="string">'geom1'</span>).selection(stringCSelSurface).label(stringdotsSurface);
+0089     model.geom(<span class="string">'geom1'</span>).selection.create(stringCSelVolume, <span class="string">'CumulativeSelection'</span>);
+0090     model.geom(<span class="string">'geom1'</span>).selection(stringCSelVolume).label(stringdotsVolume);
+0091 <span class="keyword">end</span>
+0092 
+0093 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel3'</span>, <span class="string">'CumulativeSelection'</span>);
+0094 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel3'</span>).label(<span class="string">'extBC'</span>);
+0095 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel4'</span>, <span class="string">'CumulativeSelection'</span>);
+0096 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel4'</span>).label(<span class="string">'fascicle'</span>);
+0097 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel5'</span>, <span class="string">'CumulativeSelection'</span>);
+0098 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel5'</span>).label(<span class="string">'nerveB'</span>);
+0099 model.geom(<span class="string">'geom1'</span>).selection.create(<span class="string">'csel6'</span>, <span class="string">'CumulativeSelection'</span>);
+0100 model.geom(<span class="string">'geom1'</span>).selection(<span class="string">'csel6'</span>).label(<span class="string">'fascicleDomain'</span>);
+0101 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'cyl1'</span>, <span class="string">'Cylinder'</span>);
+0102 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).label(<span class="string">'nerf'</span>);
+0103 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).set(<span class="string">'r'</span>, <span class="string">'nerveD/2'</span>);
+0104 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).set(<span class="string">'contributeto'</span>, <span class="string">'csel5'</span>);
+0105 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).set(<span class="string">'pos'</span>, {<span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'-nerveLComsol/2'</span>});
+0106 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0107 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl1'</span>).set(<span class="string">'h'</span>, <span class="string">'nerveLComsol'</span>);
+0108 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'cyl2'</span>, <span class="string">'Cylinder'</span>);
+0109 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).label(<span class="string">'milieu'</span>);
+0110 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'r'</span>, <span class="string">'ringCuffD*1.5'</span>);
+0111 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'layername'</span>, {<span class="string">''</span> <span class="string">''</span> <span class="string">''</span> <span class="string">''</span> <span class="string">''</span>});
+0112 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'contributeto'</span>, <span class="string">'csel3'</span>);
+0113 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'layertop'</span>, true);
+0114 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'selresultshow'</span>, <span class="string">'bnd'</span>);
+0115 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'pos'</span>, {<span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'-nerveLComsol'</span>});
+0116 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0117 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'h'</span>, <span class="string">'nerveLComsol*2'</span>);
+0118 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl2'</span>).set(<span class="string">'layerbottom'</span>, true);
+0119 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'cyl3'</span>, <span class="string">'Cylinder'</span>);
+0120 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl3'</span>).label(<span class="string">'cuff'</span>);
+0121 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl3'</span>).set(<span class="string">'r'</span>, <span class="string">'ringCuffD/2'</span>);
+0122 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl3'</span>).set(<span class="string">'pos'</span>, {<span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'-cuffL/2'</span>});
+0123 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl3'</span>).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0124 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'cyl3'</span>).set(<span class="string">'h'</span>, <span class="string">'cuffL'</span>);
+0125 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'wp1'</span>, <span class="string">'WorkPlane'</span>);
+0126 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).set(<span class="string">'unite'</span>, <span class="string">'on'</span>);
+0127 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).set(<span class="string">'quickz'</span>, <span class="string">'nerveLComsol/2'</span>);
+0128 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.create(<span class="string">'pol1'</span>, <span class="string">'Polygon'</span>);
+0129 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.feature(<span class="string">'pol1'</span>).set(<span class="string">'x'</span>, <span class="string">'0.00064125  0.00063996  0.00063609  0.00062966   0.0006207  0.00060923  0.00059532    0.000579  0.00056036  0.00053945  0.00051638  0.00049123  0.00046409  0.00043509  0.00040434  0.00037196  0.00033808  0.00030284  0.00026638  0.00022885   0.0001904  0.00015118  0.00011135  7.1075e-05  3.0512e-05 -1.0174e-05 -5.0819e-05 -9.1259e-05 -0.00013133 -0.00017088 -0.00020973 -0.00024774 -0.00028476 -0.00032062  -0.0003552 -0.00038835 -0.00041993 -0.00044982  -0.0004779 -0.00050406 -0.00052818 -0.00055018 -0.00056997 -0.00058745 -0.00060258 -0.00061527 -0.00062549  -0.0006332 -0.00063835 -0.00064093 -0.00064093 -0.00063835  -0.0006332 -0.00062549 -0.00061527 -0.00060258 -0.00058745 -0.00056997 -0.00055018 -0.00052818 -0.00050406  -0.0004779 -0.00044982 -0.00041993 -0.00038835  -0.0003552 -0.00032063 -0.00028476 -0.00024774 -0.00020973 -0.00017088 -0.00013133 -9.1259e-05 -5.0819e-05 -1.0174e-05  3.0512e-05  7.1075e-05  0.00011135  0.00015118   0.0001904  0.00022885  0.00026638  0.00030284  0.00033808  0.00037196  0.00040434  0.00043509  0.00046409  0.00049123  0.00051638  0.00053945  0.00056036    0.000579  0.00059532  0.00060923   0.0006207  0.00062966  0.00063609  0.00063996  0.00064125'</span>);
+0130 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'wp1'</span>).geom.feature(<span class="string">'pol1'</span>).set(<span class="string">'y'</span>, <span class="string">'-1.3799e-20  4.0671e-05  8.1177e-05  0.00012136  0.00016105  0.00020009  0.00023833  0.00027561  0.00031177  0.00034669   0.0003802  0.00041219  0.00044251  0.00047106   0.0004977  0.00052235  0.00054489  0.00056523   0.0005833  0.00059902  0.00061233  0.00062317  0.00063151   0.0006373  0.00064052  0.00064117  0.00063923  0.00063472  0.00062766  0.00061806  0.00060598  0.00059146  0.00057456  0.00055534  0.00053389  0.00051028  0.00048462  0.00045702  0.00042757  0.00039639  0.00036363   0.0003294  0.00029384   0.0002571  0.00021932  0.00018066  0.00014127  0.00010132  6.0955e-05  2.0346e-05 -2.0346e-05 -6.0955e-05 -0.00010132 -0.00014127 -0.00018066 -0.00021932  -0.0002571 -0.00029384  -0.0003294 -0.00036363 -0.00039639 -0.00042757 -0.00045702 -0.00048462 -0.00051028 -0.00053389 -0.00055534 -0.00057456 -0.00059146 -0.00060598 -0.00061806 -0.00062766 -0.00063472 -0.00063923 -0.00064117 -0.00064052  -0.0006373 -0.00063151 -0.00062317 -0.00061233 -0.00059902  -0.0005833 -0.00056523 -0.00054489 -0.00052235  -0.0004977 -0.00047106 -0.00044251 -0.00041219  -0.0003802 -0.00034669 -0.00031177 -0.00027561 -0.00023833 -0.00020009 -0.00016105 -0.00012136 -8.1177e-05 -4.0671e-05 -1.7086e-19'</span>);
+0131 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'ext1'</span>, <span class="string">'Extrude'</span>);
+0132 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'contributeto'</span>, <span class="string">'csel4'</span>);
+0133 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0134 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'reverse'</span>, true);
+0135 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).set(<span class="string">'selresultshow'</span>, <span class="string">'all'</span>);
+0136 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).setIndex(<span class="string">'distance'</span>, <span class="string">'nerveLComsol'</span>, 0);
+0137 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ext1'</span>).selection(<span class="string">'input'</span>).set({<span class="string">'wp1'</span>});
+0138 
+0139 
+0140 <span class="comment">% creation of Dots</span>
+0141 <span class="keyword">for</span> l=1:dotsNLongitudinal
+0142     <span class="keyword">for</span> k=1:dotsNRevolve
+0143         
+0144         <span class="comment">% string name to refer to</span>
+0145         <span class="comment">% ==========================================</span>
+0146         indiceDot           = (l-1)*dotsNRevolve + k;
+0147         <span class="comment">% surface string name (selection)</span>
+0148         <span class="comment">% cselDotsSurface0001   -&gt; dotsSurface0001</span>
+0149         stringCSelSurface   = sprintf(<span class="string">'cselDotsSurface%04d'</span>, indiceDot);
+0150         stringdotsSurface   = sprintf(<span class="string">'dotsPSurface%04d'</span>, indiceDot);
+0151         
+0152         <span class="comment">% volume string name (selection)</span>
+0153         <span class="comment">% cselDotsVolume0001    -&gt; dotsVolume0001</span>
+0154         stringCSelVolume    = sprintf(<span class="string">'cselDotsVolume%04d'</span>, indiceDot); 
+0155         stringdotsVolume    = sprintf(<span class="string">'dotsVolume%04d'</span>, indiceDot);
+0156         
+0157         <span class="comment">% parametric surface ID</span>
+0158         stringPS            = sprintf(<span class="string">'ps%04d'</span>, indiceDot);
+0159         stringRev           = sprintf(<span class="string">'rev%04d'</span>, indiceDot);
+0160         <span class="comment">% ==========================================</span>
+0161         
+0162         
+0163         model.geom(<span class="string">'geom1'</span>).create(stringPS, <span class="string">'ParametricSurface'</span>);
+0164         model.geom(<span class="string">'geom1'</span>).feature(stringPS).label(stringdotsSurface);
+0165         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0166         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'contributeto'</span>, stringCSelSurface);
+0167         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'coord'</span>, {<span class="string">'s1'</span> <span class="string">'0'</span> <span class="string">'s2'</span>});
+0168         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'parmin1'</span>, <span class="string">'-dotsLength/2'</span>);
+0169         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'pos'</span>, {sprintf(<span class="string">'dotsOffCenter*cos(2*pi/dotsNRevolve*(%d-1))'</span>, k) sprintf(<span class="string">'dotsOffCenter*sin(2*pi/dotsNRevolve*(%d-1))'</span>,k) sprintf(<span class="string">'dotsZFirst+(%d-1)*(dotsZLast-dotsZFirst)/dotsNLongitudinal'</span>,l)});
+0170         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'parmin2'</span>, <span class="string">'-dotsDepth/2'</span>);
+0171         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'parmax1'</span>, <span class="string">'dotsLength/2'</span>);
+0172         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'parmax2'</span>, <span class="string">'dotsDepth/2'</span>);
+0173         model.geom(<span class="string">'geom1'</span>).feature(stringPS).set(<span class="string">'rot'</span>, sprintf(<span class="string">'360*(2*pi*(%d-1)/dotsNRevolve)/(2*pi)'</span>, k));
+0174         model.geom(<span class="string">'geom1'</span>).create(stringRev, <span class="string">'Revolve'</span>);
+0175         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'selresult'</span>, <span class="string">'on'</span>);
+0176         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'contributeto'</span>, stringCSelVolume);
+0177         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'revolvefrom'</span>, <span class="string">'faces'</span>);
+0178         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'selresultshow'</span>, <span class="string">'all'</span>);
+0179         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'axis3'</span>, {<span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0180         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'angle2'</span>, <span class="string">'360/(2*pi)*dotsAngle'</span>);
+0181         model.geom(<span class="string">'geom1'</span>).feature(stringRev).set(<span class="string">'axistype'</span>, <span class="string">'3d'</span>);
+0182         model.geom(<span class="string">'geom1'</span>).feature(stringRev).selection(<span class="string">'inputface'</span>).named(stringPS);
+0183     <span class="keyword">end</span>
+0184 <span class="keyword">end</span>
+0185 
+0186 
+0187 
+0188 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'ballsel1'</span>, <span class="string">'BallSelection'</span>);
+0189 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel1'</span>).label(<span class="string">'AllDomain'</span>);
+0190 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel1'</span>).set(<span class="string">'r'</span>, <span class="string">'1'</span>);
+0191 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel1'</span>).set(<span class="string">'condition'</span>, <span class="string">'inside'</span>);
+0192 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'intsel1'</span>, <span class="string">'IntersectionSelection'</span>);
+0193 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'intsel1'</span>).set(<span class="string">'entitydim'</span>, <span class="string">'2'</span>);
+0194 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'intsel1'</span>).label(<span class="string">'NerveFascicleIntersection'</span>);
+0195 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'intsel1'</span>).set(<span class="string">'input'</span>, {<span class="string">'csel5'</span> <span class="string">'csel4'</span>});
+0196 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'difsel1'</span>, <span class="string">'DifferenceSelection'</span>);
+0197 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel1'</span>).set(<span class="string">'entitydim'</span>, <span class="string">'2'</span>);
+0198 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel1'</span>).label(<span class="string">'fasciclePeripheralB'</span>);
+0199 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel1'</span>).set(<span class="string">'add'</span>, {<span class="string">'csel4'</span>});
+0200 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel1'</span>).set(<span class="string">'subtract'</span>, {<span class="string">'intsel1'</span>});
+0201 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'difsel3'</span>, <span class="string">'DifferenceSelection'</span>);
+0202 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel3'</span>).label(<span class="string">'NerfWithoutFascicles'</span>);
+0203 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel3'</span>).set(<span class="string">'add'</span>, {<span class="string">'cyl1'</span>});
+0204 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel3'</span>).set(<span class="string">'subtract'</span>, {<span class="string">'csel4'</span>});
+0205 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'ballsel2'</span>, <span class="string">'BallSelection'</span>);
+0206 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel2'</span>).set(<span class="string">'entitydim'</span>, <span class="string">'2'</span>);
+0207 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel2'</span>).label(<span class="string">'cuffSurfacePeiphery'</span>);
+0208 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel2'</span>).set(<span class="string">'r'</span>, <span class="string">'0.1[mm]'</span>);
+0209 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel2'</span>).set(<span class="string">'groupcontang'</span>, true);
+0210 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'ballsel2'</span>).set(<span class="string">'posx'</span>, <span class="string">'ringCuffD/2'</span>);
+0211 
+0212 
+0213 
+0214 <span class="comment">% creation of Domain excluding inside of dots (difference selection)</span>
+0215 model.geom(<span class="string">'geom1'</span>).create(<span class="string">'difsel2'</span>, <span class="string">'DifferenceSelection'</span>);
+0216 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel2'</span>).label(<span class="string">'RealDomain'</span>);
+0217 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel2'</span>).set(<span class="string">'add'</span>, {<span class="string">'ballsel1'</span>});
+0218 
+0219 
+0220 <span class="comment">% substraction of individual dots domains</span>
+0221 arraySelectionToSubstract           = {};
+0222 <span class="keyword">for</span> i=1:dotsNRevolve*dotsNLongitudinal
+0223     <span class="comment">% selection name</span>
+0224     stringCSelVolume                = sprintf(<span class="string">'cselDotsVolume%04d'</span>, i); 
+0225     arraySelectionToSubstract       = {arraySelectionToSubstract{:} stringCSelVolume};
+0226 <span class="keyword">end</span>
+0227 
+0228 
+0229 <span class="comment">% substraction of the global domain</span>
+0230 model.geom(<span class="string">'geom1'</span>).feature(<span class="string">'difsel2'</span>).set(<span class="string">'subtract'</span>, arraySelectionToSubstract);    
+0231    
+0232 model.geom(<span class="string">'geom1'</span>).run;
+0233 
+0234 
+0235 
+0236 
+0237 model.view.create(<span class="string">'view3'</span>, 2);
+0238 
+0239 model.material.create(<span class="string">'mat4'</span>, <span class="string">'Common'</span>, <span class="string">'comp1'</span>);
+0240 model.material.create(<span class="string">'mat3'</span>, <span class="string">'Common'</span>, <span class="string">'comp1'</span>);
+0241 model.material.create(<span class="string">'mat1'</span>, <span class="string">'Common'</span>, <span class="string">'comp1'</span>);
+0242 model.material.create(<span class="string">'mat2'</span>, <span class="string">'Common'</span>, <span class="string">'comp1'</span>);
+0243 model.material.create(<span class="string">'mat5'</span>, <span class="string">'Common'</span>, <span class="string">'comp1'</span>);
+0244 model.material(<span class="string">'mat3'</span>).selection.named(<span class="string">'geom1_cyl3_dom'</span>);
+0245 model.material(<span class="string">'mat1'</span>).selection.named(<span class="string">'geom1_cyl1_dom'</span>);
+0246 model.material(<span class="string">'mat2'</span>).selection.named(<span class="string">'geom1_csel4_dom'</span>);
+0247 model.material(<span class="string">'mat5'</span>).selection.named(<span class="string">'geom1_difsel1'</span>);
+0248 
+0249 model.physics.create(<span class="string">'ec'</span>, <span class="string">'ConductiveMedia'</span>, <span class="string">'geom1'</span>);
+0250 model.physics(<span class="string">'ec'</span>).selection.named(<span class="string">'geom1_difsel2'</span>);
+0251 model.physics(<span class="string">'ec'</span>).create(<span class="string">'ci1'</span>, <span class="string">'ContactImpedance'</span>, 2);
+0252 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'ci1'</span>).selection.named(<span class="string">'geom1_difsel1'</span>);
+0253 model.physics(<span class="string">'ec'</span>).create(<span class="string">'dimp1'</span>, <span class="string">'DistributedImpedance'</span>, 2);
+0254 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'dimp1'</span>).selection.named(<span class="string">'geom1_csel3_bnd'</span>);
+0255 
+0256 model.physics(<span class="string">'ec'</span>).create(<span class="string">'ein2'</span>, <span class="string">'ElectricInsulation'</span>, 2);
+0257 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'ein2'</span>).selection.named(<span class="string">'geom1_ballsel2'</span>);
+0258 model.physics.create(<span class="string">'cir'</span>, <span class="string">'Circuit'</span>, <span class="string">'geom1'</span>);
+0259 
+0260 <span class="comment">% terminal and circuit associated with dots</span>
+0261 
+0262 <span class="keyword">for</span> i=1:dotsNRevolve*dotsNLongitudinal
+0263     <span class="comment">% string names</span>
+0264     stringDotsTerminal      = sprintf(<span class="string">'term%d'</span>, i);
+0265     stringCSelVolume        = sprintf(<span class="string">'cselDotsVolume%04d'</span>, i); 
+0266     stringCurrentSource     = sprintf(<span class="string">'I%04d'</span>, i);
+0267     stringCurrentSourceName = sprintf(<span class="string">'IvsU%04d'</span>, i);
+0268     
+0269     <span class="comment">% circuit &amp; terminal</span>
+0270     model.physics(<span class="string">'ec'</span>).create(stringDotsTerminal, <span class="string">'Terminal'</span>, 2);
+0271     model.physics(<span class="string">'ec'</span>).feature(stringDotsTerminal).selection.named(<span class="string">'geom1_cselDotsVolume0001_bnd'</span>);
+0272     model.physics(<span class="string">'ec'</span>).feature(stringDotsTerminal).selection.named([<span class="string">'geom1_'</span> stringCSelVolume <span class="string">'_bnd'</span>]);
+0273     
+0274     model.physics(<span class="string">'cir'</span>).create(stringCurrentSource, <span class="string">'CurrentSourceCircuit'</span>, -1);
+0275     model.physics(<span class="string">'cir'</span>).create(stringCurrentSourceName, <span class="string">'ModelDeviceIV'</span>, -1);
+0276     
+0277     model.physics(<span class="string">'ec'</span>).feature(stringDotsTerminal).set(<span class="string">'TerminalName'</span>, sprintf(<span class="string">'%d'</span>,i));
+0278     model.physics(<span class="string">'ec'</span>).feature(stringDotsTerminal).set(<span class="string">'TerminalType'</span>, <span class="string">'Circuit'</span>);
+0279     model.physics(<span class="string">'ec'</span>).feature(stringDotsTerminal).label(sprintf(<span class="string">'Terminal %d'</span>,i));
+0280 <span class="keyword">end</span>
+0281 
+0282 model.mesh(<span class="string">'mesh1'</span>).create(<span class="string">'ftet1'</span>, <span class="string">'FreeTet'</span>);
+0283 
+0284 model.result.table.create(<span class="string">'evl3'</span>, <span class="string">'Table'</span>);
+0285 
+0286 model.view(<span class="string">'view1'</span>).set(<span class="string">'scenelight'</span>, <span class="string">'off'</span>);
+0287 model.view(<span class="string">'view3'</span>).axis.set(<span class="string">'ymin'</span>, <span class="string">'-0.5677165985107422'</span>);
+0288 model.view(<span class="string">'view3'</span>).axis.set(<span class="string">'xmax'</span>, <span class="string">'1.261846899986267'</span>);
+0289 model.view(<span class="string">'view3'</span>).axis.set(<span class="string">'xmin'</span>, <span class="string">'-1.261846899986267'</span>);
+0290 model.view(<span class="string">'view3'</span>).axis.set(<span class="string">'ymax'</span>, <span class="string">'1.5677165985107422'</span>);
+0291 
+0292 model.material(<span class="string">'mat4'</span>).label(<span class="string">'Saline'</span>);
+0293 model.material(<span class="string">'mat4'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'electricconductivity'</span>, {<span class="string">'sigmaSaline'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaSaline'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaSaline'</span>});
+0294 model.material(<span class="string">'mat4'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'relpermittivity'</span>, {<span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0295 model.material(<span class="string">'mat3'</span>).label(<span class="string">'conjonctiveTissue'</span>);
+0296 model.material(<span class="string">'mat3'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'electricconductivity'</span>, {<span class="string">'sigmaEXT'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaEXT'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaEXT'</span>});
+0297 model.material(<span class="string">'mat3'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'relpermittivity'</span>, {<span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0298 model.material(<span class="string">'mat1'</span>).label(<span class="string">'epineurium'</span>);
+0299 model.material(<span class="string">'mat1'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'electricconductivity'</span>, {<span class="string">'sigmaEpineurium'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaEpineurium'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaEpineurium'</span>});
+0300 model.material(<span class="string">'mat1'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'relpermittivity'</span>, {<span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0301 model.material(<span class="string">'mat2'</span>).label(<span class="string">'fascicle'</span>);
+0302 model.material(<span class="string">'mat2'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'electricconductivity'</span>, {<span class="string">'sigmaFasciculexy'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaFasciculexy'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaFasciculez'</span>});
+0303 model.material(<span class="string">'mat2'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'relpermittivity'</span>, {<span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0304 model.material(<span class="string">'mat5'</span>).label(<span class="string">'perineurium'</span>);
+0305 model.material(<span class="string">'mat5'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'electricconductivity'</span>, {<span class="string">'sigmaPerineurium'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaPerineurium'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'sigmaPerineurium'</span>});
+0306 model.material(<span class="string">'mat5'</span>).propertyGroup(<span class="string">'def'</span>).set(<span class="string">'relpermittivity'</span>, {<span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'0'</span> <span class="string">'1'</span>});
+0307 
+0308 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'ci1'</span>).set(<span class="string">'ds'</span>, <span class="string">'epFascicleLayer'</span>);
+0309 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'dimp1'</span>).set(<span class="string">'ds'</span>, <span class="string">'LayerBC'</span>);
+0310 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'dimp1'</span>).set(<span class="string">'sigmabnd_mat'</span>, <span class="string">'userdef'</span>);
+0311 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'dimp1'</span>).set(<span class="string">'sigmabnd'</span>, <span class="string">'sigmaConjonctive'</span>);
+0312 model.physics(<span class="string">'ec'</span>).feature(<span class="string">'dimp1'</span>).set(<span class="string">'epsilonrbnd_mat'</span>, <span class="string">'userdef'</span>);
+0313 
+0314 
+0315 
+0316 <span class="comment">% circuit design</span>
+0317 <span class="keyword">for</span> i=1:dotsNRevolve*dotsNLongitudinal
+0318     
+0319     <span class="comment">% string names</span>
+0320     stringCurrentSource     = sprintf(<span class="string">'I%04d'</span>, i);
+0321     stringCurrentSourceName = sprintf(<span class="string">'IvsU%04d'</span>, i);
+0322     
+0323     <span class="comment">% circuit properties</span>
+0324     model.physics(<span class="string">'cir'</span>).prop(<span class="string">'CircuitSettings'</span>).set(<span class="string">'CreateNodes'</span>, <span class="string">'1'</span>); <span class="comment">%nodes are associatetd with numbers (0(masse),1,2,3,..)</span>
+0325     model.physics(<span class="string">'cir'</span>).feature(stringCurrentSource).set(<span class="string">'Connections'</span>, {<span class="string">'0'</span>; sprintf(<span class="string">'%d'</span>,i)});
+0326     model.physics(<span class="string">'cir'</span>).feature(stringCurrentSource).set(<span class="string">'value'</span>, sprintf(<span class="string">'I%d'</span>,i)); <span class="comment">% changer 'courant' à Ix</span>
+0327     model.physics(<span class="string">'cir'</span>).feature(stringCurrentSourceName).set(<span class="string">'V_src'</span>, sprintf(<span class="string">'root.comp1.ec.V0_%d'</span>,i)); <span class="comment">%V0_X</span>
+0328     model.physics(<span class="string">'cir'</span>).feature(stringCurrentSourceName).set(<span class="string">'Connections'</span>, {sprintf(<span class="string">'%d'</span>,i); <span class="string">'0'</span>});
+0329 <span class="keyword">end</span>
+0330 
+0331 model.mesh(<span class="string">'mesh1'</span>).feature(<span class="string">'size'</span>).set(<span class="string">'hauto'</span>, 3);
+0332 model.mesh(<span class="string">'mesh1'</span>).feature(<span class="string">'size'</span>).set(<span class="string">'custom'</span>, <span class="string">'on'</span>);
+0333 model.mesh(<span class="string">'mesh1'</span>).feature(<span class="string">'size'</span>).set(<span class="string">'hmin'</span>, <span class="string">'0.5E-4'</span>);
+0334 model.mesh(<span class="string">'mesh1'</span>).run;
+0335 
+0336 model.result.table(<span class="string">'evl3'</span>).label(<span class="string">'Evaluation 3D'</span>);
+0337 model.result.table(<span class="string">'evl3'</span>).comments(<span class="string">'Interactive 3D values'</span>);
+0338 
+0339 <span class="comment">%generating one study because loop was asking too much memory for XXX</span>
+0340 <span class="comment">%studies in one mph file.</span>
+0341 
+0342     i = 1;
+0343     
+0344     <span class="comment">% normal case</span>
+0345     model.param.set(sprintf(<span class="string">'I%d'</span>,currentNodeID),  sprintf(<span class="string">'%d'</span>,1));
+0346     <span class="keyword">if</span> nargin == 2
+0347         <span class="keyword">for</span> k=1:numel(I)
+0348             model.param.set(sprintf(<span class="string">'I%d'</span>,k),  sprintf(<span class="string">'%0.15f'</span>,I(k)));
+0349         <span class="keyword">end</span>
+0350     <span class="keyword">end</span>
+0351     
+0352     stringStudyName         = sprintf(<span class="string">'std%d'</span>,i); <span class="comment">%stdX</span>
+0353     stringStudyStepName     = sprintf(<span class="string">'st%d'</span>,i); <span class="comment">%stX</span>
+0354     stringStationaryName    = sprintf(<span class="string">'s%d'</span>,i); <span class="comment">%sX</span>
+0355     stringSolName           = sprintf(<span class="string">'sol%d'</span>,i); <span class="comment">%solX</span>
+0356     
+0357     model.study.create(stringStudyName);
+0358     model.study(stringStudyName).create(<span class="string">'stat'</span>, <span class="string">'Stationary'</span>);
+0359 
+0360     model.sol.create(stringSolName);
+0361     model.sol(stringSolName).study(stringStudyName);
+0362     model.sol(stringSolName).attach(stringStudyName);
+0363     model.sol(stringSolName).create(stringStudyStepName, <span class="string">'StudyStep'</span>);
+0364     model.sol(stringSolName).create(<span class="string">'v1'</span>, <span class="string">'Variables'</span>);
+0365     model.sol(stringSolName).create(stringStationaryName, <span class="string">'Stationary'</span>);
+0366     model.sol(stringSolName).feature(stringStationaryName).create(<span class="string">'fc1'</span>, <span class="string">'FullyCoupled'</span>);
+0367     model.sol(stringSolName).feature(stringStationaryName).create(<span class="string">'i1'</span>, <span class="string">'Iterative'</span>);
+0368     model.sol(stringSolName).feature(stringStationaryName).feature(<span class="string">'i1'</span>).create(<span class="string">'mg1'</span>, <span class="string">'Multigrid'</span>);
+0369     model.sol(stringSolName).feature(stringStationaryName).feature.remove(<span class="string">'fcDef'</span>);
+0370 
+0371 <span class="comment">%     model.result.create('pg1', 'PlotGroup3D');</span>
+0372 <span class="comment">%     model.result('pg1').create('mslc1', 'Multislice');</span>
+0373 
+0374     
+0375     model.sol(stringSolName).feature(stringStationaryName).feature(<span class="string">'i1'</span>).set(<span class="string">'linsolver'</span>, <span class="string">'cg'</span>);
+0376     model.sol(stringSolName).feature(stringStationaryName).feature(<span class="string">'i1'</span>).feature(<span class="string">'mg1'</span>).set(<span class="string">'prefun'</span>, <span class="string">'amg'</span>);
+0377     model.sol(stringSolName).runAll;
+0378     
+0379     <span class="comment">%model.param.set(sprintf('I%d',i),  sprintf('%d',0));</span>
+0380     
+0381 
+0382 <span class="comment">%model.sol('sol1').runAll;</span>
+0383 
+0384 <span class="comment">% model.result('pg1').label('Electric Potential (ec)');</span>
+0385 <span class="comment">% model.result('pg1').set('frametype', 'spatial');</span>
+0386     mkdir(<span class="string">'DOTS'</span>);
+0387     model.save([pwd sprintf(<span class="string">'\\DOTS\\ModelDots%04d.mph'</span>,currentNodeID)]);
+0388     
+0389     
+0390 
+0391 <span class="keyword">end</span>
+0392</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of drawConfigParaboleAnode</title>
+  <meta name="keywords" content="drawConfigParaboleAnode">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +comsol -->
+<h1>drawConfigParaboleAnode
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function fig = drawConfigParaboleAnode() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>	send back xy coordinates of a circle of centerXY and radius R</li><li><a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>	Conversion from axis coordinates to normalised coordinates [0;1]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function fig = drawConfigParaboleAnode()</a>
+0002     import selectivity.utilities.*
+0003     
+0004     fig = figure();
+0005 
+0006     load parameters.mat
+0007     
+0008     
+0009     
+0010     
+0011     
+0012     <span class="comment">% dessin de la cuff</span>
+0013     cuffD = nerveD * 1.5;
+0014     cuffR = cuffD/2;
+0015     
+0016     xCuff = [-cuffL/2 cuffL/2 cuffL/2 -cuffL/2 -cuffL/2];
+0017     yCuff = [-cuffR -cuffR cuffR cuffR -cuffR];
+0018     
+0019     plot(xCuff, yCuff, <span class="string">'k'</span>);
+0020     hold on;
+0021         
+0022     <span class="comment">% dessin du nerf</span>
+0023     nerveR = nerveD/2;
+0024     
+0025     x1Nerf = [-nerveL/2 nerveL/2];
+0026     y1Nerf = [nerveR nerveR];
+0027     x2Nerf = [-nerveL/2 nerveL/2];
+0028     y2Nerf = [-nerveR -nerveR];
+0029     
+0030     plot(x1Nerf,y1Nerf, <span class="string">'k--'</span>);
+0031     plot(x2Nerf,y2Nerf, <span class="string">'k--'</span>);
+0032     
+0033     <span class="comment">% axe central</span>
+0034     x1Nerf = [-nerveL/2 nerveL/2];
+0035     y1Nerf = [0 0];
+0036     
+0037     plot(x1Nerf,y1Nerf, <span class="string">'k-.'</span>);
+0038        
+0039     <span class="comment">%dessin de la cathode</span>
+0040     [xCircle1, yCircle1] = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([-ringD/2 ring2D/2], ringTorusD*3, 50);
+0041     [xCircle2, yCircle2] = <a href="../../+selectivity/+utilities/circle.html" class="code" title="function [x, y] = circle(centerXY, R, nPoints)">circle</a>([-ringD/2 -ring2D/2], ringTorusD*3, 50);
+0042     
+0043     fill(xCircle1, yCircle1, <span class="string">'r'</span>);
+0044     fill(xCircle2, yCircle2, <span class="string">'r'</span>);
+0045     
+0046     <span class="comment">%xlim([-nerveL/2 nerveL/2]);</span>
+0047     axis equal
+0048     <span class="comment">%set(gca, 'XLimMode', 'manual', 'YLimMode', 'manual');</span>
+0049     <span class="comment">%dessin de l'anode (duplicated from Comsol Model)</span>
+0050     s1 = [0:0.001e-3:0.05e-3];
+0051     s2 = [0:0.1e-3:1.5e-3];
+0052     
+0053     x0 = ringD/2;
+0054     y0 = 0.05e-3 + ring1D/2;
+0055     
+0056     xAnode1 = s2 + x0*ones(1,length(s2));
+0057     yAnode1 = -alphaP*s2.^2 + y0*ones(1,length(s2));
+0058     
+0059     xAnode2 = s2(end)*ones(1,length(s1)) + x0*ones(1,length(s1));
+0060     yAnode2 = -alphaP*s2(end)^2*ones(1,length(s1))+ s1 + y0*ones(1,length(s1));
+0061     
+0062     xAnode3 = s2(end:-1:1) + x0*ones(1,length(s2));
+0063     yAnode3 = -alphaP*s2(end:-1:1).^2 + y0*ones(1,length(s2)) + s1(end)*ones(1,length(s2));
+0064     
+0065     xAnode4 = s2(1)*ones(1,length(s1)) + x0*ones(1,length(s1));
+0066     yAnode4 = -alphaP*s2(1)^2*ones(1,length(s1))+ s1(end:-1:1) + y0*ones(1,length(s1));
+0067     
+0068     xAnode = [xAnode1 xAnode2 xAnode3 xAnode4];
+0069     yAnode = [yAnode1 yAnode2 yAnode3 yAnode4];
+0070     
+0071     fill(xAnode, yAnode, <span class="string">'r'</span>);    
+0072     fill(xAnode, -yAnode, <span class="string">'r'</span>);    
+0073     
+0074     
+0075     
+0076     axis equal
+0077     ylim([-diff(ylim())/2 diff(ylim())/2]);
+0078     
+0079     <span class="comment">%% dessin des axes et mesures</span>
+0080     
+0081     
+0082     <span class="comment">%NERF</span>
+0083     <span class="comment">% nerve limit</span>
+0084     xNerfLineMeasure1 = [-nerveL/2 -nerveL/2];
+0085     yNerfLineMeasure1 = [nerveR nerveR+nerveR];
+0086     
+0087     xNerfLineMeasure2 = [nerveL/2 nerveL/2];
+0088     yNerfLineMeasure2 = [nerveR nerveR+nerveR];
+0089     
+0090     <span class="comment">% nerve dimension L</span>
+0091     plot(xNerfLineMeasure1, yNerfLineMeasure1,<span class="string">'k--'</span>, xNerfLineMeasure2, yNerfLineMeasure2, <span class="string">'k--'</span>);
+0092     
+0093     <span class="comment">% nerve arrow dimension L</span>
+0094     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure1(2), <span class="string">'x'</span>);
+0095     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure2(2), <span class="string">'x'</span>);
+0096     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure1(2), <span class="string">'y'</span>);
+0097     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure2(2), <span class="string">'y'</span>);
+0098     annotation(<span class="string">'doublearrow'</span>, [arrowX1 arrowX2], [arrowY1 arrowY2]);
+0099     
+0100     <span class="comment">% nerve box arrow dimension L</span>
+0101     boxW = 0.4;
+0102     boxH = 0.05;
+0103     boxX = (arrowX1 + arrowX2)*(1/3) - boxW/2;
+0104     boxY = (arrowY1 + arrowY2)/2;
+0105     
+0106     textBoxPosition = [boxX boxY boxW boxH];
+0107     testBoxText     = sprintf(<span class="string">'%0.1f mm'</span>, nerveL*1e3);
+0108     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+0109     
+0110     <span class="comment">% nerve arrow dimension R</span>
+0111     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-nerveL/4, <span class="string">'x'</span>);
+0112     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-nerveL/4, <span class="string">'x'</span>);
+0113     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(nerveR, <span class="string">'y'</span>);
+0114     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(0, <span class="string">'y'</span>);
+0115     annotation(<span class="string">'arrow'</span>, [arrowX2 arrowX1], [arrowY2 arrowY1]);
+0116     
+0117     <span class="comment">% nerve box arrow dimension R</span>
+0118     boxW = 0.15;
+0119     boxH = 0.1;
+0120     boxX = (arrowX1 + arrowX2)/2 ;
+0121     boxY = (arrowY1 + arrowY2)/2 - boxH/2;
+0122     
+0123     textBoxPosition = [boxX boxY boxW boxH];
+0124     testBoxText     = sprintf(<span class="string">'%0.1f mm'</span>, nerveR*1e3);
+0125     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+0126     
+0127     <span class="comment">%  between ring distance limit</span>
+0128     xNerfLineMeasure1 = [-ringD/2 -ringD/2];
+0129     yNerfLineMeasure1 = [ring2D/2 ring2D/2+ring2D];
+0130     
+0131     xNerfLineMeasure2 = [ringD/2 ringD/2];
+0132     yNerfLineMeasure2 = [ring1D/2 ring2D/2+ring2D];
+0133     
+0134     <span class="comment">%  between ring distance limit</span>
+0135     plot(xNerfLineMeasure1, yNerfLineMeasure1,<span class="string">'k-.'</span>, xNerfLineMeasure2, yNerfLineMeasure2, <span class="string">'k-.'</span>);
+0136     
+0137     <span class="comment">% between ring distance arrow</span>
+0138     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure1(2), <span class="string">'x'</span>);
+0139     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure2(2), <span class="string">'x'</span>);
+0140     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure1(2), <span class="string">'y'</span>);
+0141     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure2(2), <span class="string">'y'</span>);
+0142     annotation(<span class="string">'doublearrow'</span>, [arrowX1 arrowX2], [arrowY1 arrowY2]);
+0143     
+0144     <span class="comment">% between ring distance arrow</span>
+0145     boxW = 0.4;
+0146     boxH = 0.05;
+0147     boxX = (arrowX1 + arrowX2)/2 - boxW/2;
+0148     boxY = (arrowY1 + arrowY2)/2 + boxH/2;
+0149     
+0150     textBoxPosition = [boxX boxY boxW boxH];
+0151     testBoxText     = sprintf(<span class="string">'%0.1f mm'</span>, ringD*1e3);
+0152     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+0153     
+0154     <span class="comment">% cuff arrow dimension R</span>
+0155     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(nerveL/4, <span class="string">'x'</span>);
+0156     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(nerveL/4, <span class="string">'x'</span>);
+0157     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(cuffR, <span class="string">'y'</span>);
+0158     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(0, <span class="string">'y'</span>);
+0159     annotation(<span class="string">'arrow'</span>, [arrowX2 arrowX1], [arrowY2 arrowY1]);
+0160     
+0161     <span class="comment">% cuff box arrow dimension R</span>
+0162     boxW = 0.15;
+0163     boxH = 0.1;
+0164     boxX = (arrowX1 + arrowX2)/2 ;
+0165     boxY = (arrowY1 + arrowY2)/2 - boxH/2;
+0166     
+0167     textBoxPosition = [boxX boxY boxW boxH];
+0168     testBoxText     = sprintf(<span class="string">'%0.1f mm'</span>, cuffR*1e3);
+0169     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+0170     
+0171     
+0172     
+0173     
+0174     <span class="comment">% cuff limit</span>
+0175     xNerfLineMeasure1 = [-cuffL/2 -cuffL/2];
+0176     yNerfLineMeasure1 = [0 -cuffR-cuffR];
+0177     
+0178     xNerfLineMeasure2 = [cuffL/2 cuffL/2];
+0179     yNerfLineMeasure2 = [0 -cuffR-cuffR];
+0180     
+0181     <span class="comment">% cuff dimension L</span>
+0182     plot(xNerfLineMeasure1, yNerfLineMeasure1,<span class="string">'k--'</span>, xNerfLineMeasure2, yNerfLineMeasure2, <span class="string">'k--'</span>);
+0183     
+0184     <span class="comment">% cuff arrow dimension L</span>
+0185     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure1(2), <span class="string">'x'</span>);
+0186     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xNerfLineMeasure2(2), <span class="string">'x'</span>);
+0187     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure1(2), <span class="string">'y'</span>);
+0188     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yNerfLineMeasure2(2), <span class="string">'y'</span>);
+0189     annotation(<span class="string">'doublearrow'</span>, [arrowX2 arrowX1], [arrowY2 arrowY1]);
+0190     
+0191     <span class="comment">% cuff box arrow dimension L</span>
+0192     boxW = 0.4;
+0193     boxH = 0.05;
+0194     boxX = (arrowX1 + arrowX2)*(1/2) - boxW/2;
+0195     boxY = (arrowY1 + arrowY2)/2-boxH;
+0196     
+0197     textBoxPosition = [boxX boxY boxW boxH];
+0198     testBoxText     = sprintf(<span class="string">'%0.1f mm'</span>, cuffL*1e3);
+0199     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+0200     
+0201     <span class="comment">% ring2 (cathode) arrow dimension R</span>
+0202     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-ringD/2, <span class="string">'x'</span>);
+0203     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-ringD/2, <span class="string">'x'</span>);
+0204     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-ring2D/2, <span class="string">'y'</span>);
+0205     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(0, <span class="string">'y'</span>);
+0206     annotation(<span class="string">'arrow'</span>, [arrowX2 arrowX1], [arrowY2 arrowY1]);
+0207     
+0208     <span class="comment">% ring2 (cathode) box arrow dimension R</span>
+0209     boxW = 0.15;
+0210     boxH = 0.1;
+0211     boxX = (arrowX1 + arrowX2)/2 - boxW;
+0212     boxY = (arrowY1 + arrowY2)/2 - boxH/2;
+0213     
+0214     textBoxPosition = [boxX boxY boxW boxH];
+0215     testBoxText     = sprintf(<span class="string">'%0.2f mm'</span>, ring2D/2*1e3);
+0216     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+0217     
+0218     
+0219     <span class="comment">% parabole (cathode) arrow dimension R</span>
+0220     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(ringD/2, <span class="string">'x'</span>);
+0221     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(ringD/2, <span class="string">'x'</span>);
+0222     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(-ring1D/2, <span class="string">'y'</span>);
+0223     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(0, <span class="string">'y'</span>);
+0224     annotation(<span class="string">'arrow'</span>, [arrowX2 arrowX1], [arrowY2 arrowY1]);
+0225     
+0226     <span class="comment">% parabole (cathode) box arrow dimension R</span>
+0227     boxW = 0.15;
+0228     boxH = 0.1;
+0229     boxX = (arrowX1 + arrowX2)/2 ;
+0230     boxY = (arrowY1 + arrowY2)/2 - boxH/2;
+0231     
+0232     
+0233     
+0234     
+0235     <span class="comment">% alpha arrow dimension L</span>
+0236     textBoxPosition = [boxX boxY boxW boxH];
+0237     testBoxText     = sprintf(<span class="string">'%0.2f mm'</span>, ring1D/2*1e3);
+0238     annotation(<span class="string">'textbox'</span>,textBoxPosition , <span class="string">'String'</span>, testBoxText, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+0239         
+0240     <span class="comment">% alpha arrow dimension L</span>
+0241     arrowX1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(nerveL/4, <span class="string">'x'</span>);
+0242     arrowX2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(xAnode1(end/2), <span class="string">'x'</span>);
+0243     arrowY1 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(nerveL/4, <span class="string">'y'</span>);
+0244     arrowY2 = <a href="../../+selectivity/+utilities/xyToNormxy.html" class="code" title="function xyN = xyToNormxy(XY, type)">xyToNormxy</a>(yAnode1(end/2), <span class="string">'y'</span>);
+0245     <span class="comment">%annotation('doublearrow', [arrowX2 arrowX1], [arrowY2 arrowY1]);</span>
+0246     
+0247     <span class="comment">% alpha box arrow dimension L</span>
+0248     boxW = 0.4;
+0249     boxH = 0.05;
+0250     boxX = (arrowX1 + arrowX2)*(1/3) - boxW/2;
+0251     boxY = (arrowY1 + arrowY2)/2-boxH;
+0252     
+0253     textBoxPosition = [boxX boxY boxW boxH];
+0254     testBoxText     = sprintf(<span class="string">'alpha = %0.1f'</span>, alphaP);
+0255     annotation(<span class="string">'textarrow'</span>,[arrowX1 arrowX2],[arrowY1 arrowY2] , <span class="string">'String'</span>, testBoxText,  <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+0256     
+0257     
+0258 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

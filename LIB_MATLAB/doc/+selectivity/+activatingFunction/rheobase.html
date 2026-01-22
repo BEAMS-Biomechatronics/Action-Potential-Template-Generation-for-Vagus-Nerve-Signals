@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rheobase</title>
+  <meta name="keywords" content="rheobase">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +activatingFunction -->
+<h1>rheobase
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function rheobase() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+anodalBlock/AP.html" class="code" title="">AP</a>	</li><li><a href="../../+selectivity/+collision/AP.html" class="code" title="">AP</a>	</li><li><a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function rheobase()</a>
+0002 
+0003 import selectivity.fibreModel.fibre.*
+0004 import selectivity.stimWaveForm.*
+0005 import selectivity.anodalBlock.*
+0006 
+0007 delete(gcp);
+0008 distcomp.feature( <span class="string">'LocalUseMpiexec'</span>, false );
+0009 
+0010 
+0011 
+0012 <span class="keyword">for</span> w=4:12
+0013 
+0014 
+0015     <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0016     <span class="comment">%           paramètres modifiables !                 %</span>
+0017     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0018 
+0019     <span class="comment">%Paramètres du script modifiable qui n'intervient que dans le calcul des AP</span>
+0020     <span class="comment">%(MATLAB)</span>
+0021     fiberD = w*1.25e-6;                 <span class="comment">%[m] diamètre de la fibre</span>
+0022     
+0023     pusleTTransition = 1e-5;
+0024     nProc = 4; <span class="comment">%(6 sur la station, 4 sur PC perso).</span>
+0025     relTol = 1e-3;
+0026     
+0027 
+0028     
+0029 
+0030     <span class="comment">%% MODELE FIBRE MATLAB</span>
+0031 
+0032     <span class="comment">%calcul du nombre de noeuds nécessaire</span>
+0033     <span class="comment">%Couvrir toute la longueur du modèle</span>
+0034     nNoeuds = 41;
+0035     fibreTest = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fiberD,nNoeuds,20);
+0036     LFibre = fibreTest.L;
+0037     Ve = [];
+0038 
+0039     <span class="comment">%sauvegarde des conclusions de simulation</span>
+0040     <span class="comment">% type</span>
+0041     <span class="comment">% coordonnées</span>
+0042     <span class="comment">% taille fibre</span>
+0043     <span class="comment">% decalage</span>
+0044     coordonnee = [];
+0045     diametreFibre = [];
+0046     type = [];
+0047     
+0048     
+0049     <span class="comment">% intervale de tension à appliquer en un noeud.</span>
+0050     VInterInit = [-0.16 0];
+0051     pulseTEnd =  10.^[-5:0.25:-3];
+0052    
+0053     <span class="comment">%Ici, il faudra vérifier si les deux valeurs extrémales de la tension</span>
+0054     <span class="comment">%donne bien un AP et pas d'AP. Si ce n'est pas le cas, arrêter le</span>
+0055     <span class="comment">%script et afficher un message d'erreur.</span>
+0056    
+0057     
+0058     
+0059     VSauvegarde = zeros(1,length(pulseTEnd));
+0060     <span class="keyword">for</span> m = 1:length(pulseTEnd)        
+0061     
+0062          
+0063         WF                        = selectivity.stimWaveForm.stimWaveFormLinesByPieces();
+0064         WF.setParameters(pulseTEnd(m), 1e-6, [0 1;1 1]);
+0065         
+0066         <span class="comment">% Arrays for parallel loop</span>
+0067         WFArray(1:nProc)          = WF.copy();
+0068         fiberDArray(1:nProc)      = fiberD;
+0069         nNoeudsArray(1:nProc)     = nNoeuds;
+0070         
+0071         VInter = VInterInit;        
+0072         diff = 1;
+0073         
+0074                
+0075         parpool(nProc);
+0076         <span class="keyword">while</span> diff&gt;relTol
+0077             stepV = (VInter(2)-VInter(1))/(nProc+1);
+0078             VValue = VInter(1)+stepV:stepV:VInter(2)-stepV;
+0079             
+0080             
+0081             
+0082             fAPOrNotAP = zeros(1,nProc);
+0083             parfor k=1:nProc
+0084                     
+0085                     <span class="comment">%</span>
+0086                     fibreInstance = <a href="../../+selectivity/+fibreModel/+fibre/fibre.html" class="code" title="">fibre</a>(fiberDArray(k), nNoeudsArray(k), 20, WFArray(k));
+0087 
+0088                     <span class="comment">% Recherche dans le modèle COMSOL du potentiel externe aux</span>
+0089                     <span class="comment">% noeuds (Ve)</span>
+0090                     Vek = zeros(1,41);
+0091                     Vek(19) = VValue(k);
+0092 
+0093 
+0094                     <span class="comment">% Introduction des valeurs de Ve dans le modèle de la fibre.</span>
+0095                     fibreInstance.setVe(Vek);
+0096 
+0097                     <span class="comment">% Résolution du problème d'une fibre soumise à un potentiel Ve</span>
+0098                     <span class="comment">% aux noeuds.</span>
+0099                     fibreInstance = fibreInstance.solve();
+0100 
+0101                     <span class="comment">% Analyse de la propagation des AP et classification de la fibre dans l'une des 4 catégories.</span>
+0102                     APtracking = <a href="../../+selectivity/+anodalBlock/AP.html" class="code" title="">AP</a>();
+0103                     APtracking = APtracking.findAP(fibreInstance.solution(:,1:fibreInstance.n), fibreInstance.time, Vek);
+0104 
+0105                     <span class="comment">% Sauvegarde</span>
+0106                     fAPOrNotAP(k) = (APtracking.type==2||APtracking.type==3||APtracking.type==4)*1;
+0107 
+0108 <span class="comment">%                     %Mise en forme du résultat pour la fibre</span>
+0109 <span class="comment">%                     currentFig = fibreInstance.plotBaton(10,[-20:1:20],4,APtracking);</span>
+0110 <span class="comment">%                     saveas(currentFig, sprintf('figure%d_%d_%d.fig',w,m,k));</span>
+0111             <span class="keyword">end</span>
+0112             fAPOrNotAP = [1 fAPOrNotAP 0];
+0113             VValue = [VInter(1) VValue VInter(2)];
+0114             Vtransition10 = find(fAPOrNotAP==0);
+0115             newLeft = VValue(Vtransition10(1)-1);
+0116             newRight = VValue(Vtransition10(1));
+0117             VInter = [newLeft newRight];
+0118             display(sprintf(<span class="string">'L intervale est le suivant : [%f %f]'</span>,VInter(1), VInter(2)));
+0119             diff = newRight-newLeft
+0120         <span class="keyword">end</span>
+0121         delete(gcp);
+0122         
+0123         
+0124         VSauvegarde(m) = VInter(1);
+0125     <span class="keyword">end</span>
+0126     
+0127     
+0128     figure
+0129     plot(pulseTEnd, VSauvegarde);
+0130     hold on;
+0131     xlabel(<span class="string">'Pulse Time [s]'</span>);
+0132     ylabel(<span class="string">'Cathode voltage'</span>);
+0133     legend(sprintf(<span class="string">'rheobaes curve for %0.1fµm fiber'</span>,fiberD*1e6 ))
+0134     filename = sprintf(<span class="string">'sauvegarde%d.mat'</span>,fiberD);
+0135     save(filename,  <span class="string">'fiberD'</span>, <span class="string">'pulseTEnd'</span>, <span class="string">'VSauvegarde'</span>);
+0136 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotMaxAFFunctionOfCuffL</title>
+  <meta name="keywords" content="plotMaxAFFunctionOfCuffL">
+  <meta name="description" content="PLOTMAXAFFUNCTIONOFCUFFL">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # +selectivity --><!-- menu.html +optimAnode -->
+<h1>plotMaxAFFunctionOfCuffL
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PLOTMAXAFFUNCTIONOFCUFFL</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function plotMaxAFFunctionOfCuffL() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PLOTMAXAFFUNCTIONOFCUFFL
+
+ Plot max(d2V/d2z)|(right anode) = f(cuffL)
+
+ Résumé de la fonction :
+
+   - boucle sigmaEXT
+   - boucle cuffL [5mm 20mm]
+   - stocker :
+       - les données d2V/d2z pour la fibre centrale et la fibre
+           périphérique
+       - les graphiques
+       - un instantané 2D du résultat COMSOL
+       - les données finales
+   - plot des résultats</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../+selectivity/+activatingFunction/getActivatingFunction.html" class="code" title="function Vzz = getActivatingFunction(Ve)">getActivatingFunction</a>	getActivatingFunction</li><li><a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>	getExternalVoltage(comsolModel, fiberCoordinates) get External Voltage</li><li><a href="../../+selectivity/+comsol/parametersParaboleAnode.html" class="code" title="function parametersParaboleAnode()">parametersParaboleAnode</a>	This function make a parameters.mat file containing the default</li><li><a href="../../+selectivity/+utilities/getFiberCoordinates.html" class="code" title="function [XYZFiberCoordinates] = getFiberCoordinates(varargin)">getFiberCoordinates</a>	getFiberCoordinates('1D or 2D',   [zDistance], [ciblePosition])</li><li><a href="../../+selectivity/+utilities/saveData.html" class="code" title="function saveData(folderLevel1)">saveData</a>	saveData transfert all the files of the current directory in a new directory</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotMaxAFFunctionOfCuffL()</a>
+0002 <span class="comment">% PLOTMAXAFFUNCTIONOFCUFFL</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Plot max(d2V/d2z)|(right anode) = f(cuffL)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Résumé de la fonction :</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   - boucle sigmaEXT</span>
+0009 <span class="comment">%   - boucle cuffL [5mm 20mm]</span>
+0010 <span class="comment">%   - stocker :</span>
+0011 <span class="comment">%       - les données d2V/d2z pour la fibre centrale et la fibre</span>
+0012 <span class="comment">%           périphérique</span>
+0013 <span class="comment">%       - les graphiques</span>
+0014 <span class="comment">%       - un instantané 2D du résultat COMSOL</span>
+0015 <span class="comment">%       - les données finales</span>
+0016 <span class="comment">%   - plot des résultats</span>
+0017 
+0018     import selectivity.comsol.*
+0019     import selectivity.utilities.*
+0020     import selectivity.activatingFunction.*
+0021     import com.comsol.model.*
+0022     import com.comsol.model.util.*
+0023 
+0024     <span class="comment">% Make parameters.mat default for Parabole Comsol Model</span>
+0025     <a href="../../+selectivity/+comsol/parametersParaboleAnode.html" class="code" title="function parametersParaboleAnode()">parametersParaboleAnode</a>();
+0026     <span class="comment">% Load default parameters</span>
+0027     load(<span class="string">'parameters.mat'</span>)
+0028 
+0029     <span class="comment">%parameters of this function</span>
+0030     rangeCuffL          = [5.01e-3:0.01e-3:5.11e-3];
+0031     rangeSigmaExt       = [sigmaSaline; sigmaConjonctive];
+0032     alphaPRange         = [-86.354567; -91.865395];
+0033     rangeFiberD         = [5e-6 7.5e-6 10e-6];
+0034 
+0035     
+0036     <span class="comment">%color for plotting</span>
+0037     colorPlot = [<span class="string">'y'</span>, <span class="string">'c'</span>, <span class="string">'r'</span>, <span class="string">'g'</span>, <span class="string">'b'</span>, <span class="string">'k'</span>];
+0038 
+0039 
+0040     <span class="comment">% Make some changes in parameters.mat if you don't want the default</span>
+0041     <span class="comment">% parameters (defaults can be found in parametersParaboleAnode())</span>
+0042     <span class="comment">% Example :</span>
+0043     <span class="comment">% cuffL = 10e-3;</span>
+0044     <span class="comment">% save('parameters.mat', 'cuffL', '-append');</span>
+0045 
+0046 
+0047     <span class="comment">% Load the variables now if made any change.</span>
+0048     load(<span class="string">'parameters.mat'</span>);
+0049 
+0050     <span class="comment">% Coordinates</span>
+0051     fiberD                  = 5e-6;
+0052     nFibreLayerPerFasicle   = 5;
+0053     
+0054     nerveL                  = 2e-2;
+0055     nerveD                  = 2e-3;
+0056     fascicleD               = 0.4e-3;
+0057     
+0058     nerveL                  = 3e-2;
+0059     
+0060     <span class="comment">% commit to parameters.mat</span>
+0061     save(<span class="string">'parameters.mat'</span>, <span class="string">'fiberD'</span>, <span class="string">'nFibreLayerPerFasicle'</span>, <span class="string">'nNodeShift'</span>, <span class="string">'nerveL'</span>, <span class="string">'nerveD'</span>, <span class="string">'fascicleD'</span>, <span class="string">'nerveL'</span>, <span class="string">'-append'</span>);
+0062   
+0063     <span class="comment">% External voltage extracted from Comsol Model</span>
+0064     
+0065    
+0066    
+0067     
+0068     
+0069         
+0070     <span class="keyword">for</span> k = 1:length(rangeSigmaExt)
+0071         <span class="comment">% figure for this conductivity (sigmaExt)</span>
+0072         <span class="comment">% We plot external and central fiber for 3 diameters of fiber</span>
+0073         fig = figure();
+0074         
+0075         <span class="comment">% stocking result here</span>
+0076         saveMaxAFFunctionCentral    = zeros(length(rangeFiberD), length(rangeCuffL));
+0077         saveMaxAFFunctionExt        = zeros(length(rangeFiberD), length(rangeCuffL));
+0078         
+0079         <span class="keyword">for</span> l = 1:length(rangeCuffL)
+0080             <span class="keyword">for</span> n = 1:length(rangeFiberD)
+0081 
+0082                 <span class="comment">%changement des paramètres</span>
+0083                 sigmaEXT        = rangeSigmaExt(k);
+0084                 alphaP          = alphaPRange(k);
+0085                 fiberD          = rangeFiberD(n);
+0086                 save(<span class="string">'parameters.mat'</span>, <span class="string">'sigmaEXT'</span>, <span class="string">'alphaP'</span>, <span class="string">'fiberD'</span>, <span class="string">'-append'</span>);
+0087 
+0088 
+0089 
+0090                 <span class="comment">% Change the parameters of the simulation</span>
+0091                 cuffL           = rangeCuffL(l);            
+0092                 save(<span class="string">'parameters.mat'</span>, <span class="string">'cuffL'</span>, <span class="string">'-append'</span>);
+0093 
+0094                 <span class="comment">%Comsol Model running</span>
+0095                 model           = comsolModel();
+0096 
+0097                 <span class="comment">% Stock the values of virtual Cathode activating function</span>
+0098                 z                           = [];
+0099                 VezzCentralFiberComplete    = [];
+0100                 VezzExternalFiberComplete   = [];
+0101 
+0102 
+0103                 <span class="keyword">for</span> m = 0:0.1:0.9
+0104 
+0105                     <span class="comment">%changing node Shift</span>
+0106                     nNodeShift              = m;
+0107                     XYZ                     = <a href="../../+selectivity/+utilities/getFiberCoordinates.html" class="code" title="function [XYZFiberCoordinates] = getFiberCoordinates(varargin)">getFiberCoordinates</a>(fiberD, nFibreLayerPerFasicle, nNodeShift, nerveL, nerveD, fascicleD);
+0108                     <span class="comment">% Let's start with simulation</span>
+0109                     <span class="comment">% Parameters of the simulation are extracted from parameters.mat</span>
+0110                     <span class="comment">% and model is solved directly.</span>
+0111 
+0112                     Ve                          = <a href="../../+selectivity/+comsol/getExternalVoltage.html" class="code" title="function Ve = getExternalVoltage(varargin)">getExternalVoltage</a>(model, XYZ);
+0113                     <span class="comment">%keep values of z</span>
+0114                     zTemp = squeeze(XYZ(3,1,1,:));
+0115                     z = [z; zTemp(2:end-1)];
+0116 
+0117                     <span class="comment">% find Ve2z discrete for central fiber and external fiber</span>
+0118                     VezzCentralFiber            = <a href="../../+selectivity/+activatingFunction/getActivatingFunction.html" class="code" title="function Vzz = getActivatingFunction(Ve)">getActivatingFunction</a>(squeeze(Ve(1,1,:)));
+0119                     VezzExternalFiber           = <a href="../../+selectivity/+activatingFunction/getActivatingFunction.html" class="code" title="function Vzz = getActivatingFunction(Ve)">getActivatingFunction</a>(squeeze(Ve(2,<span class="keyword">end</span>,:)));
+0120 
+0121                     <span class="comment">%keep values of Ve2z discrete for central fiber and external fiber</span>
+0122                     VezzCentralFiberComplete    = [VezzCentralFiberComplete; VezzCentralFiber];
+0123                     VezzExternalFiberComplete   = [VezzExternalFiberComplete; VezzExternalFiber];
+0124 
+0125 
+0126                 <span class="keyword">end</span>
+0127 
+0128                 <span class="comment">%TEMP</span>
+0129                 display(size(VezzCentralFiberComplete));
+0130                 display(size(z));
+0131 
+0132                 <span class="comment">% sort the data due to nodeShift mess up</span>
+0133                 [z, sortIndex]              = sort(z);
+0134                 VezzCentralFiberComplete    = VezzCentralFiberComplete(sortIndex);
+0135                 VezzExternalFiberComplete   = VezzExternalFiberComplete(sortIndex);
+0136 
+0137                 <span class="comment">% find the minimum of activating function -&gt; correspondance with</span>
+0138                 <span class="comment">% hyperoplarization node.</span>
+0139                 [VezzCentralFiberMinValue, VezzCentralFiberMinIndice] =  min(VezzCentralFiberComplete);
+0140                 [VezzExternalFiberMinValue, VezzExternalFiberMinIndice] =  min(VezzExternalFiberComplete);
+0141 
+0142                 <span class="comment">% normalize Ve2z with reference to min value (! min value is</span>
+0143                 <span class="comment">% negative)</span>
+0144                 VezzCentralFiberNorm            = VezzCentralFiberComplete/-VezzCentralFiberMinValue;
+0145                 VezzExternalFiberNorm           = VezzExternalFiberComplete/-VezzExternalFiberMinValue;
+0146 
+0147                 VezzCentralFiberMax             = max(VezzCentralFiberNorm(VezzCentralFiberMinIndice:end));
+0148                 VezzExternalFiberMax            = max(VezzExternalFiberNorm(VezzExternalFiberMinIndice:end));
+0149                 
+0150                 saveMaxAFFunctionCentral(n,l) = VezzCentralFiberMax;
+0151                 saveMaxAFFunctionExt(n,l)     = VezzExternalFiberMax;
+0152                 
+0153                 
+0154                 
+0155             <span class="keyword">end</span>
+0156         <span class="keyword">end</span>
+0157         
+0158         <span class="keyword">for</span> n = 1:length(rangeFiberD)
+0159             plot(rangeCuffL*1e3, saveMaxAFFunctionCentral(n,:), colorPlot(n));
+0160             hold on;
+0161             plot(rangeCuffL*1e3, saveMaxAFFunctionExt(n,:), colorPlot(n+3));
+0162         <span class="keyword">end</span>
+0163         <span class="comment">% labels of axis</span>
+0164         xlabel(<span class="string">'cuff length [mm]'</span>);
+0165         ylabel(<span class="string">'Value of virutal cathode activating function normalised [V] (Ven+1 + Ven-1 -2*Ven)'</span>);
+0166         
+0167         <span class="comment">% title</span>
+0168         typeSolution = [];
+0169         <span class="keyword">if</span> k==1
+0170             typeSolution = <span class="string">'solution saline'</span>;
+0171         <span class="keyword">else</span>
+0172             typeSolution = <span class="string">'tissu conjonctif'</span>;
+0173         <span class="keyword">end</span>
+0174         
+0175         <span class="comment">%legend</span>
+0176         legend([<span class="string">'Central Fiber'</span> num2str(rangeFiberD(1)*1e6) <span class="string">' µm'</span>],[<span class="string">'External Fiber'</span> num2str(rangeFiberD(1)*1e6) <span class="string">' µm'</span>],[<span class="string">'Central Fiber'</span> num2str(rangeFiberD(2)*1e6) <span class="string">' µm'</span>],[<span class="string">'External Fiber'</span> num2str(rangeFiberD(2)*1e6) <span class="string">' µm'</span>],[<span class="string">'Central Fiber'</span> num2str(rangeFiberD(3)*1e6) <span class="string">' µm'</span>],[<span class="string">'External Fiber'</span> num2str(rangeFiberD(3)*1e6) <span class="string">' µm'</span>]);
+0177         
+0178         title([<span class="string">'Cuff remplie de '</span> typeSolution]);
+0179 
+0180         <span class="comment">%save figure</span>
+0181         saveas(fig, typeSolution);
+0182 
+0183         <span class="comment">%save data and figure in a subfolder named string(typeSolution)</span>
+0184         <a href="../../+selectivity/+utilities/saveData.html" class="code" title="function saveData(folderLevel1)">saveData</a>(typeSolution);
+0185     <span class="keyword">end</span>
+0186 <span class="keyword">end</span>
+0187</pre></div>
+<hr><address>Generated on Tue 26-Jun-2018 10:40:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
